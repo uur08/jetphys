@@ -1,7 +1,7 @@
 # jetphys
 INSTRUCTIONS
 
-Clone this repo in a folder that has jecsys already... (Not inside of jecsys)
+Clone (git clone https://github.com/uur08/jetphys.git) this repo in a folder that has jecsys already... (Not inside of jecsys)
 
 Do the linking with this command  "ln -s ../jecsys/CondFormats"
 
