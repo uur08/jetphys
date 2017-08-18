@@ -1,12 +1,17 @@
 # jetphys
 INSTRUCTIONS
 
-Clone (git clone https://github.com/uur08/jetphys.git) this repo in a folder that has jecsys already... (Not inside of jecsys)
+1-) Clone (git clone https://github.com/uur08/jetphys.git) this repo in a folder that has jecsys already... (Not inside of jecsys)
 
-Do the linking with this command  "ln -s ../jecsys/CondFormats"
+2-) Do the linking with this command  "ln -s ../jecsys/CondFormats"
 
-Finally add your "settings.h" that was prepared for running over different ERAS
+3-) Finally add your "settings.h" that was prepared for running over different ERAS
 
-Add also additional readme files if you need them. Namely CHANGELOG, LXPLUS, README
+4-) Add also additional readme files if you need them. Namely CHANGELOG, LXPLUS, README
 
-After having the all framework please check the updates regularly before running....
+
+WARNINGS!!!
+
+a-) After building the all framework please check the updates regularly before running....
+
+b-) Please dont push "setting.h" into this repository. This is meant to be update study repo.
