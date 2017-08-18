@@ -1,4 +1,4 @@
-settings*
+settings.h*
 CondFormats
 *.root
 *_C*
