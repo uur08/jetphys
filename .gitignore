@@ -1,6 +1,7 @@
-settings.h*
+settings.h
 CondFormats
 *.root
 *_C*
 *.log
+*~
 RESULTS_STUDIES
