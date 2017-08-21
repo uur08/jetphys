@@ -422,6 +422,7 @@ public :
   // Additional code for processing
   ofstream *ferr;
   string _type;
+  string _run;
   TFile *_outfile;
   map<string, TH1D*> pudist;
   vector<string> _triggers;
@@ -544,6 +545,7 @@ private:
 fillHistos::fillHistos(TTree *tree) : fChain(0)
 {
   _type = _jp_type;
+  _run = _jp_run;
 
   assert(tree);
   Init(tree); // custom

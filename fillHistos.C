@@ -954,7 +954,7 @@ void fillHistos::initBasics(string name)
 
   // open file for output
   TFile *f = (_outfile ? _outfile :
-              new TFile(Form("output-%s-1.root",_type.c_str()), "RECREATE"));
+              new TFile(Form("output-%s-%s-1.root",_type.c_str(),_run.c_str()), "RECREATE"));
   assert(f && !f->IsZombie());
   f->mkdir(name.c_str());
   assert(f->cd(name.c_str()));
@@ -1140,7 +1140,7 @@ void fillHistos::fillBasic(basicHistos *h)
     double djmass = (_j1+_j2).M();
     double ymaxdj = max(fabs(jty[i0]),fabs(jty[i1]));
     bool goodmass = (jtpt[i0]>30. && jtpt[i1]>30.);
-    if (_evtid && goodmass && _jetids[i0] && _jetids[i1] &&
+    if (_pass && _evtid && goodmass && _jetids[i0] && _jetids[i1] &&
         ymaxdj >= h->ymin && ymaxdj < h->ymax) {
       
       assert(h->hdjmass);
@@ -1830,7 +1830,7 @@ void fillHistos::initEtas(string name)
   TDirectory *curdir = gDirectory;
 
   // open file for output
-  TFile *f = (_outfile ? _outfile : new TFile(Form("output-%s-1.root",_type.c_str()), "RECREATE"));
+  TFile *f = (_outfile ? _outfile : new TFile(Form("output-%s-%s-1.root",_type.c_str(),_run.c_str()), "RECREATE"));
   assert(f && !f->IsZombie());
   f->mkdir(name.c_str());
   assert(f->cd(name.c_str()));
@@ -2000,7 +2000,7 @@ void fillHistos::initMcHistos(string name)
   TDirectory *curdir = gDirectory;
 
   // open file for output
-  TFile *f = (_outfile ? _outfile : new TFile(Form("output-%s-1.root",_type.c_str()), "RECREATE"));
+  TFile *f = (_outfile ? _outfile : new TFile(Form("output-%s-%s-1.root",_type.c_str(),_run.c_str()), "RECREATE"));
   assert(f && !f->IsZombie());
   f->mkdir(name.c_str());
   assert(f->cd(name.c_str()));
@@ -2176,7 +2176,7 @@ void fillHistos::initRunHistos(string name, double ymin, double ymax) {
 
   // open file for output
   TFile *f = (_outfile ? _outfile :
-              new TFile(Form("output-%s-1.root",_type.c_str()), "RECREATE"));
+              new TFile(Form("output-%s-%s-1.root",_type.c_str(),_run.c_str()), "RECREATE"));
   assert(f && !f->IsZombie());
   //assert(f->mkdir(name.c_str()));
   f->mkdir(name.c_str());
@@ -2353,11 +2353,11 @@ void fillHistos::fillJetID(vector<bool> &id)
       
       if ((fabs(jty[i])<2.5)) //Tight ID changed with MUF and CEMF
                 id[i] = ((jtnhf[i] < 0.90 && jtnef[i] < 0.90 && jtn[i] > 1) && ((fabs(jty[i]) <= 2.4 && jtchf[i] >0 && jtnch[i] >0 && jtcef[i] <0.90 && jtmuf[i] < 0.90 ) || fabs(jty[i])>2.4));
+                
+      if ((fabs(jty[i])>=2.5) && (fabs(jty[i])) <= 2.7) //Loose ID changed wih MUF
+                 id[i] = ((jtnhf[i] < 0.99 && jtnef[i] < 0.99 && jtn[i] > 1) && ((fabs(jty[i]) <= 2.5 && jtchf[i] >0 && jtnch[i] >0 && jtcef[i] < 0.99 && jtmuf[i] < 0.99  ) || fabs(jty[i])>2.5));
              
-        if ((fabs(jty[i])>=2.5) && (fabs(jty[i])) <= 2.7) //Loose ID changed wih MUF
-                id[i] = ((jtnhf[i] < 0.99 && jtnef[i] < 0.99 && jtn[i] > 1) && ((fabs(jty[i]) <= 2.4 && jtchf[i] >0 && jtnch[i] >0 && jtcef[i] < 0.99 && jtmuf[i] < 0.99  ) || fabs(jty[i])>2.4)); 
-             
-        if ((fabs(jty[i])>2.7)) id[i] = jtidloose[i]; //Loose ID unchanged
+      if ((fabs(jty[i])>2.7)) id[i] = jtidloose[i]; //Loose ID unchanged
 
     if (_jp_doECALveto) {
       assert(ecalhot && ecalcold);

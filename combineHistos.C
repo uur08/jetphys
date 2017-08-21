@@ -33,11 +33,11 @@ void combineHistos() {
   
   TDirectory *curdir = gDirectory;
 
-  TFile *fin = new TFile(Form("output-%s-2a.root",_jp_type.c_str()),"READ");
+  TFile *fin = new TFile(Form("output-%s-%s-2a.root",_jp_type.c_str(),_jp_run.c_str()),"READ");
   assert(fin && !fin->IsZombie());
   _top = gDirectory;
 
-  TFile *fout = new TFile(Form("output-%s-2b.root",_jp_type.c_str()),"RECREATE");
+  TFile *fout = new TFile(Form("output-%s-%s-2b.root",_jp_type.c_str(),_jp_run.c_str()),"RECREATE");
   assert(fout && !fout->IsZombie());
 
   cout << "Calling combineHistos("<<_jp_type<<");" << endl;
@@ -214,6 +214,7 @@ void combineHistos() {
   recurseFile(fin, fout, "hdjresptp_probe_a025");
   recurseFile(fin, fout, "hdjresp_probe_a03");
   recurseFile(fin, fout, "hdjresptp_tag_a03");
+  
   //Dijet mass
   recurseFile(fin, fout, "hdjmass");
   recurseFile(fin, fout, "hdjmass0");

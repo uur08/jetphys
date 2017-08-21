@@ -84,11 +84,12 @@ std::map<std::string, double> triglumi;
 
 void normalizeHistos() {
 
-  TFile *fin = new TFile(Form("output-%s-1.root",_jp_type.c_str()),"READ");
+  TFile *fin = new TFile(Form("output-%s-%s-1.root",_jp_type.c_str(),_jp_run.c_str()),"READ");
   assert(fin && !fin->IsZombie());
 
-  TFile *fout = new TFile(Form("output-%s-2a.root",_jp_type.c_str()),"RECREATE");
+  TFile *fout = new TFile(Form("output-%s-%s-2a.root",_jp_type.c_str(),_jp_run.c_str()),"RECREATE");
   assert(fout && !fout->IsZombie());
+
 
   if (_lumiscale!=1 && !_jp_ismc)
     cout << "Attention! : Scaling luminosity to the new estimate"
