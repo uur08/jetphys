@@ -155,7 +155,17 @@ double vx[neta][nbins] =
   hpt3 = new TH1D("hpt3","",nx,&x[0]);
 
   // dijet mass
-  hdjmass = new TH1D("hdjmass","",nx,&x[0]);
+
+  // const int nMassBins = 103;
+   
+   //double massBoundaries[nMassBins+1] = {1, 3, 6, 10, 16, 23, 31, 40, 50, 61, 74, 88, 103, 119, 137, 156, 176, 197, 220, 244, 270, 296, 325, 354, 386, 419, 453, 489, 526, 565, 606, 649, 693, 740, 788, 838, 890, 944, 1000, 1058, 1118, 1181, 1246, 1313, 1383, 1455, 1530, 1607, 1687, 1770, 1856, 1945, 2037, 2132, 2231, 2332, 2438, 2546, 2659, 2775, 2895, 3019, 3147, 3279, 3416, 3558, 3704, 3854, 4010, 4171, 4337, 4509, 4686, 4869, 5058, 5253, 5455, 5663, 5877, 6099, 6328, 6564, 6808, 7060, 7320, 7589, 7866, 8152, 8447, 8752, 9067, 9391, 9726, 10072, 10430, 10798, 11179, 11571, 11977, 12395, 12827, 13272, 13732, 14000};
+
+   int number_of_variableWidth_bins = 88 - 1;
+  Double_t massBins[88] = {1, 3, 6, 10, 16, 23, 31, 40, 50, 61, 74, 88, 103, 119, 137, 156, 176, 197, 220, 244, 270, 296, 325, 354, 386, 419, 453, 489, 526, 565, 606, 649,  693, 740, 788, 838, 890, 944, 1000, 1058, 1100, 1181, 1246, 1313, 1383, 1455, 1530, 1607, 1687, 1770, 1856, 1945, 2037, 2132, 2231, 2332, 2438, 2546, 2659, 2775, 2895, 3019, 3147, 3279, 3416, 3558, 3704, 3854, 4010, 4171, 4337, 4509, 4686, 4869, 5058, 5253, 5455, 5663, 5877, 6099, 6328, 6564, 6808, 7000, 7250,7500,7750,8000}; 
+
+   hdjmass = new TH1D("hdjmass","",number_of_variableWidth_bins, massBins);
+   //hdjmass = new TH1D("hdjmass","",nx,&x[0]);
+  
   hdjmass0 = new TH1D("hdjmass0","",int(_jp_sqrts),0.,_jp_sqrts);
   hdj_leading = new TH1D("hdj_leading","",nx,&x[0]);
   hdj_subleading = new TH1D("hdj_subleading","",nx,&x[0]);
@@ -236,6 +246,8 @@ double vx[neta][nbins] =
   pnce = new TProfile("pnce","",nx0,&x0[0]);
   pnmu = new TProfile("pnmu","",nx0,&x0[0]);
   pchf = new TProfile("pchf","",nx0,&x0[0]);
+  pchf_vs_cm = new TProfile("pchf_vs_cm","",300,-0.5,299.5,0,2);
+
   pnef = new TProfile("pnef","",nx0,&x0[0]);
   pnhf = new TProfile("pnhf","",nx0,&x0[0]);
   pcef = new TProfile("pcef","",nx0,&x0[0]);
@@ -255,6 +267,11 @@ double vx[neta][nbins] =
   hmuf = new TH1D("hmuf","",110,0.,1.1);
   hbeta = new TH1D("hbeta","",110,0.,1.1);
   hbetastar = new TH1D("hbetastar","",110,0.,1.1);
+
+  hchf_leading = new TH1D("hchf_leading","",110,0.,1.1);
+  hchf_subleading = new TH1D("hchf_subleading","",110,0.,1.1);
+  hchf_thirdjet = new TH1D("hchf_thirdjet","",110,0.,1.1);
+
   // control plots of components (JEC tag-and-probe)
   pncandtp = new TProfile("pncandtp","",nx0,&x0[0]);
   pnchtp = new TProfile("pnchtp","",nx0,&x0[0]);

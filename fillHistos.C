@@ -91,6 +91,7 @@ void fillHistos::Loop()
     fChain->SetBranchStatus("PFJetsCHS_.cemf_",1); // jtcef !!
     fChain->SetBranchStatus("PFJetsCHS_.muf_",1); // jtmuf !!
     fChain->SetBranchStatus("PFJetsCHS_.ncand_",1); // jtn
+	  fChain->SetBranchStatus("PFJetsCHS_.cm_",1); // jtcm
     fChain->SetBranchStatus("PFJetsCHS_.beta_",1); // jtbeta
     fChain->SetBranchStatus("PFJetsCHS_.betaStar_",1); // jtbetastar
     fChain->SetBranchStatus("PFJetsCHS_.chm_",1); // jtnch
@@ -154,6 +155,7 @@ void fillHistos::Loop()
   jtgenp4t = &PFJetsCHS__genP4__fCoordinates_fT[0];
   //
   jtn = &PFJetsCHS__ncand_[0];
+  jtcm = &PFJetsCHS__cm_[0];
   jtnch = &PFJetsCHS__chm_[0];
   jtnnh = &PFJetsCHS__nhm_[0];
   jtnne = &PFJetsCHS__phm_[0];
@@ -1511,7 +1513,9 @@ void fillHistos::fillBasic(basicHistos *h)
       assert(h->pnmu);
       h->pnmu->Fill(pt, jtnmu[i], _w);
       //
-      assert(h->pchf);
+
+		h->pchf_vs_cm->Fill(jtcm[i], jtchf[i], _w);
+		assert(h->pchf);
       h->pchf->Fill(pt, jtchf[i], _w);
       assert(h->pnef);
       h->pnef->Fill(pt, jtnef[i], _w);
@@ -1576,7 +1580,11 @@ void fillHistos::fillBasic(basicHistos *h)
         h->hnce->Fill(jtnce[i], _w);
         h->hnmu->Fill(jtnmu[i], _w);
         //
-        h->hchf->Fill(jtchf[i], _w);
+        if (i==0) h->hchf_leading->Fill(jtchf[i], _w);
+	     if (i==1) h->hchf_subleading->Fill(jtchf[i], _w);
+		  if (i==2) h->hchf_thirdjet->Fill(jtchf[i], _w);
+		  
+		  h->hchf->Fill(jtchf[i], _w);
         h->hnef->Fill(jtnef[i], _w);
         h->hnhf->Fill(jtnhf[i], _w);
         h->hcef->Fill(jtcef[i], _w);

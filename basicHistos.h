@@ -129,6 +129,8 @@ class basicHistos {
   TProfile *pnhh;
   TProfile *pnhe;
   TProfile *pchf;
+  TProfile *pchf_vs_cm;
+	
   TProfile *pnef;
   TProfile *pnhf;
   TProfile *pcef;
@@ -146,6 +148,10 @@ class basicHistos {
   TH1D *hnhh;
   TH1D *hnhe;
   TH1D *hchf;
+
+  TH1D *hchf_leading;
+  TH1D *hchf_subleading;
+  TH1D *hchf_thirdjet;
   TH1D *hnef;
   TH1D *hnhf;
   TH1D *hcef;
