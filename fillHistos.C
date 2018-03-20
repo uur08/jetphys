@@ -1407,8 +1407,11 @@ void fillHistos::fillBasic(basicHistos *h)
         _jecUnc->setJetEta(eta);
         _jecUnc->setJetPt(pt);
         unc = _jecUnc->getUncertainty(true);
+        
+        //JEC-LUMI-Det effects uncertainties respectively
         //pt = pt*(1 - 1*sqrt(pow(unc,2) + pow(2.5/100.0,2) + pow(1.0/100,2)));    // down-shifted
         //pt = pt*(1 - 1*sqrt(pow(unc,2) + pow(2.5/100.0,2) + pow(1.0/100,2)));    // up-shifted
+        
         //_jecUnc2->Rjet(pt, unc); // use Fall10 absolute scale uncertainty
       }
       
