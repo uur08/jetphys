@@ -1119,8 +1119,7 @@ void fillHistos::fillBasic(basicHistos *h)
   if (h->ismc) h->hpthat->Fill(pthat, _w);
   if (h->ismc) h->hpthatnlo->Fill(pthat);
 
-  if (njt>=2) { // Calculate and fill dijet mass
-
+  /*if (njt>=2) { // Calculate and fill dijet mass
     // Find leading jets (residual JEC may change ordering)
     map<double, int> ptorder;
     for (int i = 0; i != njt; ++i) {
@@ -1145,6 +1144,8 @@ void fillHistos::fillBasic(basicHistos *h)
     if (_pass && _evtid && goodmass && _jetids[i0] && _jetids[i1] &&
         ymaxdj >= h->ymin && ymaxdj < h->ymax) {
       
+      cout << endl <<"LeadingJet Pt: " << jtpt[i0] << " SubleadingeJet Pt: "<< jtpt[i1] << " Mass: " << djmass <<" Event Number: " << _entry << endl;
+
       assert(h->hdjmass);
       h->hdjmass->Fill(djmass, _w);
       
@@ -1163,7 +1164,7 @@ void fillHistos::fillBasic(basicHistos *h)
     }
 
   } // dijet mass
-
+*/
   if (_debug) cout << "Calculate and fill dijet balance" << endl << flush;
 
   // Calculate and fill dijet balance histograms
@@ -1398,7 +1399,7 @@ void fillHistos::fillBasic(basicHistos *h)
     // calculate efficiencies and fill histograms
     if (_evtid && id && pt>_jp_recopt && fabs(eta) >= h->ymin && fabs(eta) < h->ymax) {
       
-      if (_debug) cout << "..jec uncertainty" << endl << flush;
+      if (_debug) cout << "..jecuncertainty" << endl << flush;
 
       // Get JEC uncertainty
       double unc = 0.01; // default for MC
@@ -1406,10 +1407,57 @@ void fillHistos::fillBasic(basicHistos *h)
         _jecUnc->setJetEta(eta);
         _jecUnc->setJetPt(pt);
         unc = _jecUnc->getUncertainty(true);
+        //pt = pt*(1 - 1*sqrt(pow(unc,2) + pow(2.5/100.0,2) + pow(1.0/100,2)));    // down-shifted
+        //pt = pt*(1 - 1*sqrt(pow(unc,2) + pow(2.5/100.0,2) + pow(1.0/100,2)));    // up-shifted
         //_jecUnc2->Rjet(pt, unc); // use Fall10 absolute scale uncertainty
       }
+      
+     //Dijet Mass Calculation
+     if (njt>=2) {
+      
+    jtpt[i] = pt;
 
-      // retrieve event-wide variables
+    map<double, int> ptorder;
+    for (int i = 0; i != njt; ++i) {
+    double idx = -jtpt[i];
+      
+      while (ptorder.find(idx) != ptorder.end()) idx += 1e-5*jteta[i];
+      assert(ptorder.find(idx)==ptorder.end());
+      ptorder[idx] = i;
+    }
+    int i0 = (ptorder.begin())->second;
+    int i1 = (++ptorder.begin())->second;
+
+    
+    _j1.SetPtEtaPhiE(jtpt[i0],jteta[i0],jtphi[i0],jte[i0]);
+    _j2.SetPtEtaPhiE(jtpt[i1],jteta[i1],jtphi[i1],jte[i1]);
+    
+    
+    double djmass = (_j1+_j2).M();
+    double ymaxdj = max(fabs(jty[i0]),fabs(jty[i1]));
+    bool goodmass = (jtpt[i0]>30. && jtpt[i1]>30.);
+    if (_pass && _evtid && goodmass && _jetids[i0] && _jetids[i1] &&
+        ymaxdj >= h->ymin && ymaxdj < h->ymax) {
+      
+      assert(h->hdjmass);
+      h->hdjmass->Fill(djmass, _w);
+      
+      assert(h->hdjmass0);
+      h->hdjmass0->Fill(djmass, _w);
+      
+      assert(h->pdjmass_ptratio);
+      h->pdjmass_ptratio->Fill(djmass, _j1.Pt()/_j2.Pt(), _w);
+      
+      assert(h->pdjmass0_ptratio);
+      h->pdjmass0_ptratio->Fill(djmass, _j1.Pt()/_j2.Pt(), _w);
+      
+      h->hdj_leading->Fill(_j1.Pt(), _w);
+      h->hdj_subleading->Fill(_j2.Pt(), _w);
+    }
+
+  }//dijet mass  
+
+// retrieve event-wide variables
       double dphi = (njt>1 ? delta_phi(jtphi[0], jtphi[1]) : 0.);
       double dpt = (njt>1 ? fabs(jtpt[0]-jtpt[1])/(jtpt[0]+jtpt[1]) : 0.999);
       //double met = this->met;
@@ -1447,7 +1495,7 @@ void fillHistos::fillBasic(basicHistos *h)
       assert(h->hpt2);
       assert(h->hpt3);
       if (i==0)
-        h->hpt1->Fill(pt, _w);
+         h->hpt1->Fill(pt, _w);
       if (i==1)
         h->hpt2->Fill(pt, _w);
       if (i==2)
