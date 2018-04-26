@@ -175,6 +175,13 @@ double vx[neta][nbins] =
   //hdjmass0->Sumw2();
   //pdjmass_ptratio->Sumw2();
   //pdjmass0_ptratio->Sumw2();
+  
+  //GEN-LEVEL dijet mass
+  
+  gen_hdjmass = new TH1D("gen_hdjmass","",nMassBins, massBoundaries);
+  gen_hdjmass0 = new TH1D("gen_hdjmass0","",int(_jp_sqrts),0.,_jp_sqrts);
+  gen_hdj_leading = new TH1D("gen_hdj_leading","",nx,&x[0]);
+  gen_hdj_subleading = new TH1D("gen_hdj_subleading","",nx,&x[0]);
 
   // basic properties
   ppt = new TProfile("ppt","",nx,&x[0]);
@@ -480,6 +487,10 @@ double vx[neta][nbins] =
     myuw = new TH1D("myuw","my(yreco);p_{T,reco}",nx,&x[0]); // pTreco, yreco
     myf = new TH1D("myf","my(yreco);p_{T,reco}",3485,15,3500); // pTreco, yreco
     myfuw = new TH1D("myfuw","my(yreco);p_{T,reco}",3485,15,3500); // pTreco, yreco
+    
+    //unfolding studies dijet mass
+    //(Mjjgen,ygen); (Mjjreco,yreco)
+    matrix_gen_reco = new TH2D("matrix_gen_reco","Response_Matrix;Mjj_{gen};Mjj_{reco}",nMassBins,massBoundaries,nMassBins,massBoundaries);
 
     //htrpu = new TH1D("htrpu","",100,-0.5,99.5);
     hitpu = new TH1D("hitpu","",100,-0.5,99.5);

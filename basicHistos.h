@@ -66,6 +66,13 @@ class basicHistos {
   
   TProfile *pdjmass_ptratio;
   TProfile *pdjmass0_ptratio;
+  
+  // GEN-LEVEL dijet mass
+  
+  TH1D *gen_hdjmass;
+  TH1D *gen_hdjmass0;
+  TH1D *gen_hdj_leading;
+  TH1D *gen_hdj_subleading;
 
   // basic properties
   TProfile *ppt;
@@ -327,6 +334,9 @@ class basicHistos {
   TH1D *myuw;
   TH1D *myf;
   TH1D *myfuw;
+  
+  // unfolding studies dijet mass
+  TH2D *matrix_gen_reco;
 
   TH1D *hpthat;
   TH1D *hpthatnlo;

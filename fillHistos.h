@@ -382,7 +382,7 @@ public :
   Double_t        *gen_jtp4y;//[_njt];   //[njt]
   Double_t        *gen_jtp4z;//[_njt];   //[njt]
   Double_t        *gen_jtp4t;//[_njt];   //[njt]
-  //Float_t         gen_jte[_njt];   //[njt]
+  Float_t         gen_jte[_njt];   //[njt]
   Float_t         gen_jtpt[_njt];   //[njt]
   Float_t         gen_jteta[_njt];   //[njt]
   Float_t         gen_jtphi[_njt];   //[njt]
@@ -534,6 +534,7 @@ private:
   int _totcounter;
 
   TLorentzVector _j1, _j2;
+  TLorentzVector _j1_gen, _j2_gen;
 
   /////////////////////////////////////////////////////////////////////////////
   // end more manually added code

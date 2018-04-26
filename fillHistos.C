@@ -1118,8 +1118,14 @@ void fillHistos::fillBasic(basicHistos *h)
 
   if (h->ismc) h->hpthat->Fill(pthat, _w);
   if (h->ismc) h->hpthatnlo->Fill(pthat);
+  
+  //////////////////////////////////////////////////////////
+  ////////////////// DIJET MASS ////////////////////////////
+  //////////////////////////////////////////////////////////
+  
+  
+  if (njt>=2) { // Calculate and fill reco dijet mass
 
-  /*if (njt>=2) { // Calculate and fill dijet mass
     // Find leading jets (residual JEC may change ordering)
     map<double, int> ptorder;
     for (int i = 0; i != njt; ++i) {
@@ -1134,18 +1140,15 @@ void fillHistos::fillBasic(basicHistos *h)
     // We are within a loop, so the class variables _j1 and _j2 should not be initialized here
     _j1.SetPtEtaPhiE(jtpt[i0],jteta[i0],jtphi[i0],jte[i0]);
     _j2.SetPtEtaPhiE(jtpt[i1],jteta[i1],jtphi[i1],jte[i1]);
-   // if (jtpt[i0]>300) cout<<"LeadingJet Pt: " << jtpt[i0] << " SubleadingeJet Pt: "<< jtpt[i1] << endl; //"Event Number: "<< jentry <<
-    
-    //if (jtpt[i0]>300) cout<<"LeadingJet Pt: " << jtpt[i0] << " SubleadingJet Pt: "<< jtpt[i1] << "Another Leading: " <<_j1.Pt() << "Another Subleading: " << _j2.Pt() << endl;
+   
     
     double djmass = (_j1+_j2).M();
     double ymaxdj = max(fabs(jty[i0]),fabs(jty[i1]));
     bool goodmass = (jtpt[i0]>30. && jtpt[i1]>30.);
+    
     if (_pass && _evtid && goodmass && _jetids[i0] && _jetids[i1] &&
         ymaxdj >= h->ymin && ymaxdj < h->ymax) {
       
-      cout << endl <<"LeadingJet Pt: " << jtpt[i0] << " SubleadingeJet Pt: "<< jtpt[i1] << " Mass: " << djmass <<" Event Number: " << _entry << endl;
-
       assert(h->hdjmass);
       h->hdjmass->Fill(djmass, _w);
       
@@ -1163,8 +1166,118 @@ void fillHistos::fillBasic(basicHistos *h)
       h->hdj_subleading->Fill(_j2.Pt(), _w);
     }
 
-  } // dijet mass
-*/
+  } // reco dijet mass
+  
+  if (gen_njt>=2 && _jp_ismc) { // Calculating GEN-LEVEL dijet mass
+
+    //No need to do map ordering since there is no correction that may change the ordering for GEN level.
+ 
+    _j1_gen.SetPtEtaPhiE(gen_jtpt[0],gen_jteta[0],gen_jtphi[0],gen_jte[0]);
+    _j2_gen.SetPtEtaPhiE(gen_jtpt[1],gen_jteta[1],gen_jtphi[1],gen_jte[1]);
+    
+    //Small check for Pt ordering
+    if (_j1_gen.Pt() < _j2_gen.Pt())  cout << "ERROR!!!" << " Leading Pt: " << _j1_gen.Pt() << " Subleading Pt: " << _j2_gen.Pt() << " Event: " << _entry << endl;
+    
+    double gen_djmass = (_j1_gen+_j2_gen).M();
+    double gen_ymaxdj = max(fabs(gen_jty[0]),fabs(gen_jty[1]));
+    bool gen_goodmass = (gen_jtpt[0]>30. && gen_jtpt[1]>30.);
+    
+    if (gen_goodmass && gen_ymaxdj >= h->ymin && gen_ymaxdj < h->ymax) {
+      
+      assert(h->gen_hdjmass);
+      h->gen_hdjmass->Fill(gen_djmass, _w);
+      
+      assert(h->gen_hdjmass0);
+      h->gen_hdjmass0->Fill(gen_djmass, _w);
+      
+      //GEN level Leading/Subleading jet Pt of dijet system
+      assert(h->gen_hdj_leading);
+      h->gen_hdj_leading->Fill(_j1_gen.Pt(), _w);
+      
+      assert(h->gen_hdj_subleading);
+      h->gen_hdj_subleading->Fill(_j2_gen.Pt(), _w);
+      
+      
+    }
+
+  } //  GEN-LEVEL dijet mass
+   
+  // Unfolding studies for dijet mass
+  
+  if (gen_njt>=2 && _jp_ismc && njt>=2) { 
+  
+    double deltaR_one, deltaR_two;
+    deltaR_one=0;
+    deltaR_two=0;
+    
+    
+	
+    //GEN-LEVEL calculation
+    _j1_gen.SetPtEtaPhiE(gen_jtpt[0],gen_jteta[0],gen_jtphi[0],gen_jte[0]);
+    _j2_gen.SetPtEtaPhiE(gen_jtpt[1],gen_jteta[1],gen_jtphi[1],gen_jte[1]);
+	
+    double gen_djmass = (_j1_gen+_j2_gen).M();
+    double gen_ymaxdj = max(fabs(gen_jty[0]),fabs(gen_jty[1]));
+    bool gen_goodmass = (gen_jtpt[0]>30. && gen_jtpt[1]>30.);
+	
+	//RECO-LEVEL calculation
+	//Pairing every reco jet to each other in the event without using ordering map
+	for (int j = 0; j != njt; ++j) { // first reco jet
+
+             _j1.SetPtEtaPhiE(jtpt[j],jteta[j],jtphi[j],jte[j]);
+     
+	     for (int k = 0; k != njt; ++k) { // second reco jet
+		 
+			if (j==k) continue; // Taking different jets. Otherwise its nonsense!
+	
+			_j2.SetPtEtaPhiE(jtpt[k],jteta[k],jtphi[k],jte[k]);
+    
+			double djmass = (_j1+_j2).M();
+			double ymaxdj = max(fabs(jty[j]),fabs(jty[k]));
+			bool goodmass = (jtpt[j]>30. && jtpt[k]>30.);
+		        bool reco_id  = (_pass && _evtid && goodmass && _jetids[j] && _jetids[k]);
+    
+	                //Matching gen-reco with dR
+			//We are apperantly double counting reco mass!!! 
+			//Lets say jet[j],jet[k] pair passes every condition and fills the histo.jet[k],jet[j] pair will do the same! 
+			//For preventing double counting reco mass, we can determine leading and subleading jet once. if (_j1.Pt() >  _j2.Pt()) 
+			//If they are reversed in the loop, we can just skip this pair without filling.
+			
+			if (_j1.Pt() >  _j2.Pt()){
+			deltaR_one = min( _j1_gen.DeltaR(_j1), _j1_gen.DeltaR(_j2) );
+			deltaR_two = min( _j2_gen.DeltaR(_j1), _j1_gen.DeltaR(_j2) );
+			}else {
+			deltaR_one = 1.0;    //For skipping reversed dijet pair	
+			deltaR_two = 1.0;    //For skipping reversed dijet pair
+			
+			}
+			
+			// Filling response matrix 
+			if ((gen_goodmass && gen_ymaxdj >= h->ymin && gen_ymaxdj < h->ymax) && 
+			    (reco_id) && 
+			    (deltaR_one < 0.2 && deltaR_two < 0.2)) {
+					
+					if (_debug){
+					cout << "Recojet investigation"<<endl;
+					cout << "We have " << njt << " reco jets in event " << _entry << endl;
+					cout << "First jet---> " << j << ". jet of the event" << endl;
+					cout << "Second jet ---> " << k << ". jet of the event" << endl;
+					cout << "Event "<<_entry<<"----->"<<" Dijet pair"<<"("<<j<<","<<k<<")"<<endl;
+					cout << "+++++++++++++++++++++++++++++++++++++++++++" << endl;
+					cout << endl;
+					cout << endl;
+				        }
+					
+					assert(h->matrix_gen_reco);
+					h->matrix_gen_reco->Fill(gen_djmass, djmass, _w);
+      
+      
+      }//matching and filling
+     }//second reco jet
+   }//first reco jet
+  }// Unfolding studies dijet mass*/
+
+  
   if (_debug) cout << "Calculate and fill dijet balance" << endl << flush;
 
   // Calculate and fill dijet balance histograms
