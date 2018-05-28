@@ -153,6 +153,10 @@ double vx[neta][nbins] =
   hpt1 = new TH1D("hpt1","",nx,&x[0]);
   hpt2 = new TH1D("hpt2","",nx,&x[0]);
   hpt3 = new TH1D("hpt3","",nx,&x[0]);
+  
+  // High chf jets pt spectrum
+  hpt4 = new TH1D("hpt4","",nx,&x[0]);
+  
 
   // dijet mass
 
@@ -250,6 +254,20 @@ double vx[neta][nbins] =
   pnmu = new TProfile("pnmu","",nx0,&x0[0]);
   pchf = new TProfile("pchf","",nx0,&x0[0]);
   pchf_vs_cm = new TProfile("pchf_vs_cm","",300,-0.5,299.5,0,2);
+  
+  //CHF Studies
+  pchf_pt = new TProfile("pchf_pt","",nx0,&x0[0]);
+  pchf_eta = new TProfile("pchf_eta","",100,-4.799,4.799);
+  pchf_phi = new TProfile("pchf_phi","",144,-TMath::Pi(),TMath::Pi());
+      
+  pnhf_pt = new TProfile("pnhf_pt","",nx0,&x0[0]);
+  pnhf_eta = new TProfile("pnhf_eta","",100,-4.799,4.799);
+  pnhf_phi = new TProfile("pnhf_phi","",144,-TMath::Pi(),TMath::Pi());
+      
+  pncand_pt = new TProfile("pncand_pt","",nx0,&x0[0]);
+  pncand_eta = new TProfile("pncand_eta","",100,-4.799,4.799);
+  pncand_phi = new TProfile("pncand_phi","",144,-TMath::Pi(),TMath::Pi());
+  //
 
   pnef = new TProfile("pnef","",nx0,&x0[0]);
   pnhf = new TProfile("pnhf","",nx0,&x0[0]);

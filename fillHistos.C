@@ -1260,7 +1260,7 @@ void fillHistos::fillBasic(basicHistos *h)
 			
 			if (_j1.Pt() >  _j2.Pt()){
 			deltaR_one = min( _j1_gen.DeltaR(_j1), _j1_gen.DeltaR(_j2) );
-			deltaR_two = min( _j2_gen.DeltaR(_j1), _j1_gen.DeltaR(_j2) );
+			deltaR_two = min( _j2_gen.DeltaR(_j1), _j2_gen.DeltaR(_j2) );
 			}else {
 			deltaR_one = 1.0;    //For skipping reversed dijet pair	
 			deltaR_two = 1.0;    //For skipping reversed dijet pair
@@ -1634,8 +1634,10 @@ void fillHistos::fillBasic(basicHistos *h)
       h->pnmu->Fill(pt, jtnmu[i], _w);
       //
 
-		h->pchf_vs_cm->Fill(jtcm[i], jtchf[i], _w);
-		assert(h->pchf);
+      h->pchf_vs_cm->Fill(jtcm[i], jtchf[i], _w);
+      
+      
+      assert(h->pchf);
       h->pchf->Fill(pt, jtchf[i], _w);
       assert(h->pnef);
       h->pnef->Fill(pt, jtnef[i], _w);
@@ -1699,12 +1701,35 @@ void fillHistos::fillBasic(basicHistos *h)
         h->hnnh->Fill(jtnnh[i], _w);
         h->hnce->Fill(jtnce[i], _w);
         h->hnmu->Fill(jtnmu[i], _w);
+        
         //
         if (i==0) h->hchf_leading->Fill(jtchf[i], _w);
-	     if (i==1) h->hchf_subleading->Fill(jtchf[i], _w);
-		  if (i==2) h->hchf_thirdjet->Fill(jtchf[i], _w);
+	if (i==1) h->hchf_subleading->Fill(jtchf[i], _w);
+        if (i==2) h->hchf_thirdjet->Fill(jtchf[i], _w);
 		  
-		  h->hchf->Fill(jtchf[i], _w);
+        
+          
+        //CHF Studies
+        if ( jtchf[i] > 0.90 && jtchf[i] < 0.99 ) { 
+
+              
+              h->hpt4->Fill(pt, _w); // High chf jets pt spectrum
+              
+              h->pchf_pt->Fill(pt, jtchf[i], _w);
+              h->pchf_eta->Fill(eta, jtchf[i], _w);
+              h->pchf_phi->Fill(phi, jtchf[i], _w);
+              
+              h->pnhf_pt->Fill(pt, jtnhf[i], _w);
+              h->pnhf_eta->Fill(eta, jtnhf[i], _w);
+              h->pnhf_phi->Fill(phi, jtnhf[i], _w);
+              
+              h->pncand_pt->Fill(pt, jtn[i], _w);
+              h->pncand_eta->Fill(eta, jtn[i], _w);
+              h->pncand_phi->Fill(phi, jtn[i], _w);
+              
+        }
+        
+       	h->hchf->Fill(jtchf[i], _w);
         h->hnef->Fill(jtnef[i], _w);
         h->hnhf->Fill(jtnhf[i], _w);
         h->hcef->Fill(jtcef[i], _w);
@@ -2492,7 +2517,7 @@ void fillHistos::fillJetID(vector<bool> &id)
       int ibin_hot = ecalhot->FindBin(jteta[i],jtphi[i]);
       int ibin_cold = ecalcold->FindBin(jteta[i],jtphi[i]);
       
-      //if (ecalveto->GetBinContent(ibin)==10) cout << "salaklik" << endl;
+      
       id[i] = (id[i] && ecalhot->GetBinContent(ibin_hot)!=10 && ecalcold->GetBinContent(ibin_cold)!=10);
     }
   }
@@ -2777,7 +2802,7 @@ void fillHistos::loadECALveto(const char *file)
   TFile *fe = new TFile(file, "READ");
   assert(fe && !fe->IsZombie());
 
-  //ecalveto = (TH2F*)fe->Get("ecalveto"); assert(ecalveto);
+  
   ecalhot = (TH2F*)fe->Get("h2jet"); assert(ecalhot);
   ecalcold = (TH2F*)fe->Get("h2hole"); assert(ecalcold);
 

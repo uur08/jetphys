@@ -57,6 +57,9 @@ class basicHistos {
   TH1D *hpt1;
   TH1D *hpt2;
   TH1D *hpt3;
+  
+  // High chf jets pt spectrum
+  TH1D *hpt4;
 
   // dijet mass
   TH1D *hdjmass;
@@ -137,6 +140,20 @@ class basicHistos {
   TProfile *pnhe;
   TProfile *pchf;
   TProfile *pchf_vs_cm;
+  
+  // CHF studies  
+  TProfile *pchf_pt;
+  TProfile *pchf_eta;
+  TProfile *pchf_phi;
+    
+  TProfile *pnhf_pt;
+  TProfile *pnhf_eta;
+  TProfile *pnhf_phi;
+    
+  TProfile *pncand_pt;
+  TProfile *pncand_eta;
+  TProfile *pncand_phi;
+  // 
 	
   TProfile *pnef;
   TProfile *pnhf;
