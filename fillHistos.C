@@ -1235,8 +1235,8 @@ void fillHistos::fillBasic(basicHistos *h)
     double gen_ymaxdj = max(fabs(gen_jty[0]),fabs(gen_jty[1]));
     bool gen_goodmass = (gen_jtpt[0]>30. && gen_jtpt[1]>30.);
 	
-	//RECO-LEVEL calculation
-	//Pairing every reco jet to each other in the event without using ordering map
+    //RECO-LEVEL calculation
+    //Pairing every reco jet to each other in the event without using ordering map
 	for (int j = 0; j != njt; ++j) { // first reco jet
 
              _j1.SetPtEtaPhiE(jtpt[j],jteta[j],jtphi[j],jte[j]);
@@ -1250,9 +1250,9 @@ void fillHistos::fillBasic(basicHistos *h)
 			double djmass = (_j1+_j2).M();
 			double ymaxdj = max(fabs(jty[j]),fabs(jty[k]));
 			bool goodmass = (jtpt[j]>30. && jtpt[k]>30.);
-		    bool reco_id  = (_pass && _evtid && goodmass && _jetids[j] && _jetids[k]);
+		        bool reco_id  = (_pass && _evtid && goodmass && _jetids[j] && _jetids[k]);
     
-	         //Matching gen-reco with dR
+         	        //Matching gen-reco with dR
 			//We are apperantly double counting reco mass!!! 
 			//Lets say jet[j],jet[k] pair passes every condition and fills the histo.jet[k],jet[j] pair will do the same! 
 			//For preventing double counting reco mass, we can determine leading and subleading jet once. if (_j1.Pt() >  _j2.Pt()) 
@@ -1261,9 +1261,6 @@ void fillHistos::fillBasic(basicHistos *h)
 			
 			deltaR_one = min( _j1_gen.DeltaR(_j1), _j1_gen.DeltaR(_j2) );
 			deltaR_two = min( _j2_gen.DeltaR(_j1), _j2_gen.DeltaR(_j2) );
-			
-			
-			}
 			
 			// Filling response matrix 
 			if ((gen_goodmass && gen_ymaxdj >= h->ymin && gen_ymaxdj < h->ymax) && 
