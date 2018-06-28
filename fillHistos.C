@@ -1506,12 +1506,12 @@ void fillHistos::fillBasic(basicHistos *h)
     if (h->ismc) {
       double ygen = jtgeny[i]; // use jtgeny, if available
       // GenJets matched to good reco jets in good events
-      if (_evtid && id && pt>_jp_recopt && jtgenr[i] < 0.25 &&
+      if (_evtid && id && pt>_jp_recopt && jtgenr[i] < 0.2 &&
           fabs(ygen) >= h->ymin && fabs(ygen) < h->ymax) {
         h->hpt_gg->Fill(jtgenpt[i], _w);
       }
       // GenJets matched to any reco jets in any events
-      if (pt>_jp_recopt && jtgenr[i] < 0.25 &&
+      if (pt>_jp_recopt && jtgenr[i] < 0.2 &&
           fabs(ygen) >= h->ymin && fabs(ygen) < h->ymax) {
         h->hpt_gg0->Fill(jtgenpt[i], _w);
       }
@@ -1778,7 +1778,7 @@ void fillHistos::fillBasic(basicHistos *h)
       }
 
       // MC extras
-      if (_jp_ismc && jtgenr[i]<0.25) {
+      if (_jp_ismc && jtgenr[i]<0.2) {
         h->hpt_gtw->Fill(jtgenpt[i], _w);
         if (_debug) {
           cout << "genmatch " << i
@@ -1787,7 +1787,7 @@ void fillHistos::fillBasic(basicHistos *h)
         }
       }
       if (h->ismc) {
-        if (jtgenr[i]<0.25) {
+        if (jtgenr[i]<0.2) {
           //int flv = abs(jtgenflv[i]);
           double ptgen = jtgenpt[i];
           //double r = (jtgenpt[i] ? pt/jtgenpt[i] : 0);
@@ -1826,7 +1826,7 @@ void fillHistos::fillBasic(basicHistos *h)
 
     // MC: Filling outside of eta bin
     if (h->ismc && _evtid && id && pt > _jp_recopt &&
-        jtgenr[i]<0.25 && jtgenpt[i]!=0 && jtjesnew[i]!=0) {
+        jtgenr[i]<0.2 && jtgenpt[i]!=0 && jtjesnew[i]!=0) {
 
       double ptgen = jtgenpt[i];
       double r = (ptgen ? pt / ptgen : 0);
