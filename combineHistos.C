@@ -84,6 +84,7 @@ void combineHistos() {
   recurseFile(fin, fout, "hpt1");
   recurseFile(fin, fout, "hpt2");
   recurseFile(fin, fout, "hpt3");
+  recurseFile(fin, fout, "hpt4");
   recurseFile(fin, fout, "hpt_noid");
   recurseFile(fin, fout, "hpt_noevtid");
   recurseFile(fin, fout, "hpt_nojetid");
