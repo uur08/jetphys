@@ -505,7 +505,7 @@ void fillHistos::Loop()
     if (_pass && ecalhot && ecalcold &&
        ( (njt>=1 && ecalhot->GetBinContent(ecalhot->FindBin(jteta[0],jtphi[0]))==10)
         || (njt>=2 && ecalhot->GetBinContent(ecalhot->FindBin(jteta[1],jtphi[1]))==10)
-        || (njt>=1 && ecalcold->GetBinContent(ecalcold->FindBin(jteta[1],jtphi[1]))==10)
+        || (njt>=1 && ecalcold->GetBinContent(ecalcold->FindBin(jteta[0],jtphi[0]))==10)
         || (njt>=2 && ecalcold->GetBinContent(ecalcold->FindBin(jteta[1],jtphi[1]))==10) ))
     {
       ++_ecalcounter_bad;
@@ -732,6 +732,7 @@ void fillHistos::Loop()
 
         genp4.SetPxPyPzE(gen_jtp4x[i],gen_jtp4y[i],gen_jtp4z[i],gen_jtp4t[i]);
         gen_jtpt[i] = genp4.Pt();
+        gen_jte[i] = genp4.E();
         gen_jteta[i] = genp4.Eta(); // for matching
         gen_jtphi[i] = genp4.Phi(); // for matching
         gen_jty[i] = genp4.Rapidity();
@@ -1164,6 +1165,12 @@ void fillHistos::fillBasic(basicHistos *h)
     if (_pass && _evtid && goodmass && _jetids[i0] && _jetids[i1] &&
         ymaxdj >= h->ymin && ymaxdj < h->ymax) {
       
+      if (_debug){ 
+      cout << "First recojet " << jtpt[i0] << " Second recojet " << jtpt[i1] << endl;
+      cout << "Reco_mass " << djmass <<  endl;
+      cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
+      }
+      
       assert(h->hdjmass);
       h->hdjmass->Fill(djmass, _w);
       
@@ -1185,7 +1192,7 @@ void fillHistos::fillBasic(basicHistos *h)
   
   if (gen_njt>=2 && _jp_ismc) { // Calculating GEN-LEVEL dijet mass
 
-    //No need to do map ordering since there is no correction that may change the ordering for GEN level.
+    //No need to do sorting since there is no correction that may change sorting of jets for GEN level.
  
     _j1_gen.SetPtEtaPhiE(gen_jtpt[0],gen_jteta[0],gen_jtphi[0],gen_jte[0]);
     _j2_gen.SetPtEtaPhiE(gen_jtpt[1],gen_jteta[1],gen_jtphi[1],gen_jte[1]);
@@ -1198,6 +1205,15 @@ void fillHistos::fillBasic(basicHistos *h)
     bool gen_goodmass = (gen_jtpt[0]>30. && gen_jtpt[1]>30.);
     
     if (gen_goodmass && gen_ymaxdj >= h->ymin && gen_ymaxdj < h->ymax) {
+      
+      if (_debug){
+      cout << "First genjet Pt " << gen_jtpt[0] << " Second genjet Pt" << gen_jtpt[1] << endl;
+      cout << "First genjet Mass " << _j1_gen.M() << " Second genjet Mass" << _j2_gen.M() << endl;
+      cout << "Gen_mass " << gen_djmass <<  endl;
+      cout << "+++++++++++++++++++++++++++++++++++++++++++" << endl;
+      cout << endl;
+      cout << endl;
+      }
       
       assert(h->gen_hdjmass);
       h->gen_hdjmass->Fill(gen_djmass, _w);
@@ -1231,19 +1247,19 @@ void fillHistos::fillBasic(basicHistos *h)
     _j1_gen.SetPtEtaPhiE(gen_jtpt[0],gen_jteta[0],gen_jtphi[0],gen_jte[0]);
     _j2_gen.SetPtEtaPhiE(gen_jtpt[1],gen_jteta[1],gen_jtphi[1],gen_jte[1]);
 	
-    double gen_djmass = (_j1_gen+_j2_gen).M();
+    double gen_djmass = (_j1_gen + _j2_gen).M();
     double gen_ymaxdj = max(fabs(gen_jty[0]),fabs(gen_jty[1]));
     bool gen_goodmass = (gen_jtpt[0]>30. && gen_jtpt[1]>30.);
 	
-	//RECO-LEVEL calculation
-	//Pairing every reco jet to each other in the event without using ordering map
+    //RECO-LEVEL calculation
+    //Pairing every reco jet to each other in the event without using ordering map
 	for (int j = 0; j != njt; ++j) { // first reco jet
 
              _j1.SetPtEtaPhiE(jtpt[j],jteta[j],jtphi[j],jte[j]);
      
-	     for (int k = 0; k != njt; ++k) { // second reco jet
+	     for (int k = j+1; k != njt; ++k) { // second reco jet
 		 
-			if (j==k) continue; // Taking different jets. Otherwise its nonsense!
+			//if (j==k) continue; // Taking different jets. Otherwise its nonsense!
 	
 			_j2.SetPtEtaPhiE(jtpt[k],jteta[k],jtphi[k],jte[k]);
     
@@ -1252,20 +1268,19 @@ void fillHistos::fillBasic(basicHistos *h)
 			bool goodmass = (jtpt[j]>30. && jtpt[k]>30.);
 		        bool reco_id  = (_pass && _evtid && goodmass && _jetids[j] && _jetids[k]);
     
-	                //Matching gen-reco with dR
+         	        //Matching gen-reco with dR
 			//We are apperantly double counting reco mass!!! 
 			//Lets say jet[j],jet[k] pair passes every condition and fills the histo.jet[k],jet[j] pair will do the same! 
 			//For preventing double counting reco mass, we can determine leading and subleading jet once. if (_j1.Pt() >  _j2.Pt()) 
 			//If they are reversed in the loop, we can just skip this pair without filling.
 			
-			if (_j1.Pt() >  _j2.Pt()){
+			
 			deltaR_one = min( _j1_gen.DeltaR(_j1), _j1_gen.DeltaR(_j2) );
 			deltaR_two = min( _j2_gen.DeltaR(_j1), _j2_gen.DeltaR(_j2) );
-			}else {
-			deltaR_one = 1.0;    //For skipping reversed dijet pair	
-			deltaR_two = 1.0;    //For skipping reversed dijet pair
 			
-			}
+			
+			
+			
 			
 			// Filling response matrix 
 			if ((gen_goodmass && gen_ymaxdj >= h->ymin && gen_ymaxdj < h->ymax) && 
@@ -1278,6 +1293,10 @@ void fillHistos::fillBasic(basicHistos *h)
 					cout << "First jet---> " << j << ". jet of the event" << endl;
 					cout << "Second jet ---> " << k << ". jet of the event" << endl;
 					cout << "Event "<<_entry<<"----->"<<" Dijet pair"<<"("<<j<<","<<k<<")"<<endl;
+					cout << "DR-1 " << deltaR_one << " DR-2 " << deltaR_two << endl;
+					cout << "Gen_mass " << gen_djmass <<  endl;
+					cout << "First genjet " << gen_jtpt[0] << " Second genjet " << gen_jtpt[1] << endl;
+					cout << "Reco_mass " << djmass << endl;
 					cout << "+++++++++++++++++++++++++++++++++++++++++++" << endl;
 					cout << endl;
 					cout << endl;
@@ -1290,8 +1309,8 @@ void fillHistos::fillBasic(basicHistos *h)
       }//matching and filling
      }//second reco jet
    }//first reco jet
-  }// Unfolding studies dijet mass*/
-
+  }// Unfolding studies dijet mass
+  
   
   if (_debug) cout << "Calculate and fill dijet balance" << endl << flush;
 
