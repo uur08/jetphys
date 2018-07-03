@@ -1165,7 +1165,7 @@ void fillHistos::fillBasic(basicHistos *h)
     if (_pass && _evtid && goodmass && _jetids[i0] && _jetids[i1] &&
         ymaxdj >= h->ymin && ymaxdj < h->ymax) {
       
-      if (_debug){ 
+      if (_debug_dj){ 
       cout << "First recojet " << jtpt[i0] << " Second recojet " << jtpt[i1] << endl;
       cout << "Reco_mass " << djmass <<  endl;
       cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
@@ -1206,7 +1206,7 @@ void fillHistos::fillBasic(basicHistos *h)
     
     if (gen_goodmass && gen_ymaxdj >= h->ymin && gen_ymaxdj < h->ymax) {
       
-      if (_debug){
+      if (_debug_dj){
       cout << "First genjet Pt " << gen_jtpt[0] << " Second genjet Pt" << gen_jtpt[1] << endl;
       cout << "First genjet Mass " << _j1_gen.M() << " Second genjet Mass" << _j2_gen.M() << endl;
       cout << "Gen_mass " << gen_djmass <<  endl;
@@ -1282,7 +1282,7 @@ void fillHistos::fillBasic(basicHistos *h)
 			    (reco_id) && 
 			    (deltaR_one < 0.2 && deltaR_two < 0.2)) {
 					
-					if (_debug){
+					if (_debug_dj){
 					cout << "Recojet investigation"<<endl;
 					cout << "We have " << njt << " reco jets in event " << _entry << endl;
 					cout << "First jet---> " << j << ". jet of the event" << endl;
