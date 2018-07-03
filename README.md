@@ -7,11 +7,14 @@ INSTRUCTIONS
 
 3-) Do the linking with this command  "ln -s ../jecsys/CondFormats"
 
-4-) Finally add your "settings.h"  that was prepared for running over different ERAS... Also RESULTS folder can be added
+4-) Finally add your "settings.h"  that was prepared for running over different ERAS... Also RESULTS folder can be added.
 
 5-) These steps should be repeated for each Run ERA until you have full 2016 DATA framework working.
 
-5-) Add also additional readme files if you need them. Namely CHANGELOG, LXPLUS, README... (TOTALLY OPTIONAL!!!)
+6-) Add also additional readme files if you need them. Namely CHANGELOG, LXPLUS, README... (TOTALLY OPTIONAL!!!)
+
+7-) const bool _debug_dj = false; This line should be added to settings.h in order to have debug option for dijet system! 
+
 
 
 
