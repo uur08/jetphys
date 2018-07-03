@@ -732,7 +732,7 @@ void fillHistos::Loop()
 
         genp4.SetPxPyPzE(gen_jtp4x[i],gen_jtp4y[i],gen_jtp4z[i],gen_jtp4t[i]);
         gen_jtpt[i] = genp4.Pt();
-        gen_jte[i] = genp4.E();
+        gen_jte[i] = genp4.E(); // for dijet mass calculation
         gen_jteta[i] = genp4.Eta(); // for matching
         gen_jtphi[i] = genp4.Phi(); // for matching
         gen_jty[i] = genp4.Rapidity();
@@ -1198,7 +1198,7 @@ void fillHistos::fillBasic(basicHistos *h)
     _j2_gen.SetPtEtaPhiE(gen_jtpt[1],gen_jteta[1],gen_jtphi[1],gen_jte[1]);
     
     //Small check for Pt ordering
-    if (_j1_gen.Pt() < _j2_gen.Pt())  cout << "ERROR!!!" << " Leading Pt: " << _j1_gen.Pt() << " Subleading Pt: " << _j2_gen.Pt() << " Event: " << _entry << endl;
+    if (_debug && _j1_gen.Pt() <= _j2_gen.Pt())  cout << "ERROR!!!" << " Leading Pt: " << _j1_gen.Pt() << " Subleading Pt: " << _j2_gen.Pt() << " Event: " << _entry << endl;
     
     double gen_djmass = (_j1_gen+_j2_gen).M();
     double gen_ymaxdj = max(fabs(gen_jty[0]),fabs(gen_jty[1]));
@@ -1247,7 +1247,7 @@ void fillHistos::fillBasic(basicHistos *h)
     _j1_gen.SetPtEtaPhiE(gen_jtpt[0],gen_jteta[0],gen_jtphi[0],gen_jte[0]);
     _j2_gen.SetPtEtaPhiE(gen_jtpt[1],gen_jteta[1],gen_jtphi[1],gen_jte[1]);
 	
-    double gen_djmass = (_j1_gen + _j2_gen).M();
+    double gen_djmass = (_j1_gen+_j2_gen).M();
     double gen_ymaxdj = max(fabs(gen_jty[0]),fabs(gen_jty[1]));
     bool gen_goodmass = (gen_jtpt[0]>30. && gen_jtpt[1]>30.);
 	
@@ -1258,10 +1258,8 @@ void fillHistos::fillBasic(basicHistos *h)
              _j1.SetPtEtaPhiE(jtpt[j],jteta[j],jtphi[j],jte[j]);
      
 	     for (int k = j+1; k != njt; ++k) { // second reco jet
-		 
-			//if (j==k) continue; // Taking different jets. Otherwise its nonsense!
-	
-			_j2.SetPtEtaPhiE(jtpt[k],jteta[k],jtphi[k],jte[k]);
+		
+		_j2.SetPtEtaPhiE(jtpt[k],jteta[k],jtphi[k],jte[k]);
     
 			double djmass = (_j1+_j2).M();
 			double ymaxdj = max(fabs(jty[j]),fabs(jty[k]));
