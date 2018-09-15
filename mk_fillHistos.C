@@ -17,8 +17,10 @@
   // For JEC uncertainty
   gROOT->ProcessLine(".L CondFormats/JetMETObjects/src/SimpleJetCorrectionUncertainty.cc+");
   gROOT->ProcessLine(".L CondFormats/JetMETObjects/src/JetCorrectionUncertainty.cc+");
+  gROOT->ProcessLine(".L CondFormats/JetMETObjects/src/JetResolutionObject.cc+");
+  gROOT->ProcessLine(".L CondFormats/JetMETObjects/src/JetResolution.cc+");
 
-  // compile code
+   // compile code
   gROOT->ProcessLine(".L tools.C+");
   gROOT->ProcessLine(".L runHistos.C+");
   gROOT->ProcessLine(".L etaHistos.C+");

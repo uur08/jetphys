@@ -6,6 +6,12 @@
 
 #define fillHistos_cxx
 #include "fillHistos.h"
+#include <stdlib.h>
+#include <time.h>
+#include <memory>
+#include <random>
+
+using namespace JME;
 
 void fillHistos::Loop()
 {
@@ -692,7 +698,9 @@ void fillHistos::Loop()
       if (_jp_redojes)
         p4 *= jtjesnew[i];
       
-        // Get JEC uncertainty
+      
+   
+          // Get JEC uncertainty
         double unc = 0.01; // default for MC
         if (_jecUnc) {
             _jecUnc->setJetEta(p4.Eta());
@@ -706,11 +714,11 @@ void fillHistos::Loop()
             
         }
         
-      jte[i] = p4.E();
+      /*jte[i] = p4.E();
       jtpt[i] = p4.Pt();
       jteta[i] = p4.Eta();
       jtphi[i] = p4.Phi();
-      jty[i] = p4.Rapidity();
+      jty[i] = p4.Rapidity();*/
 
       // Calculate gen level info
       if (_jp_ismc) {
@@ -719,9 +727,86 @@ void fillHistos::Loop()
         jtgeny[i] = gp4.Rapidity();
         jtgeneta[i] = gp4.Eta();
         jtgenphi[i] = gp4.Phi();
+
+}
+
+      if(_jp_ismc && _doSF){
+          
+          JME::JetResolutionScaleFactor resolution_sf = JME::JetResolutionScaleFactor("CondFormats/JetMETObjects/data/Summer16_25nsV1_MC_SF_AK4PFchs.txt");
+          JME::JetResolution resolution = JME::JetResolution("CondFormats/JetMETObjects/data/Summer16_25nsV1_MC_PtResolution_AK4PFchs.txt");
+
+          JME::JetParameters parameters = {{JME::Binning::JetEta, p4.Eta()}, {JME::Binning::Rho, rho}};
+          JME::JetParameters parameters_1;
+          parameters_1.setJetPt(p4.Pt());
+          parameters_1.setJetEta(p4.Eta());
+          parameters_1.setRho(rho);
+          
+          float sf = resolution_sf.getScaleFactor(parameters);
+          float r = resolution.getResolution(parameters_1);
+
+          double smearFactor = 1.;
+          bool _matched = false;
+
+          std::random_device rd{};
+          std::mt19937 gen{rd()};
+          
+          
+          double m_dR_max = 0.2;
+          double min_dR = std::numeric_limits<double>::infinity();
+
+          for(int i = 0; i < gen_njt; i++) {
+              
+              double dR = gp4.DeltaR(p4);
+              if (dR > min_dR) continue;
+              
+              if (dR < m_dR_max) {
+                  double dPt = std::abs(gp4.Pt() - p4.Pt());
+                  if (dPt > 3 * r) continue; //dPtMaxFactor = cms.double(3),  # dPt < 3 * resolution
+                  
+                  min_dR = dR;
+                  _matched = true;
+                  
+              }
+          }
+
+          if (_matched) {
+              double dPt = p4.Pt() - gp4.Pt();
+              smearFactor = 1 + (sf - 1.) * dPt / p4.Pt();
+              cout << "Matched smearing..." << endl;
+              
+          } else if (sf > 1) {
+              
+              double sigma = r * std::sqrt(sf * sf - 1);
+              std::normal_distribution<double> d{0,sigma};
+//              cout << d(gen) <<  " " << sigma << endl;
+              smearFactor = 1. + d(gen);
+              cout << "Unmatched smearing..." << endl;
+              
+          } else {
+              std::cout << "Impossible to smear this jet" << std::endl;
+          }
+          
+          if (p4.E() * smearFactor < _jp_recopt) {
+              // Negative or too small smearFactor. We would change direction of the jet
+              // and this is not what we want.
+              // Recompute the smearing factor in order to have jet.energy() == MIN_JET_ENERGY
+              double newSmearFactor = _jp_recopt / p4.E();
+              smearFactor = newSmearFactor;
+              cout << "New smear factor calculated..." << endl;
+          }
+          
+//          If everything is fine, smear the reco jet in simulation
+//          Need to do sorting og jets after smearing
+          p4 *= smearFactor
+      
       }
 
-      // REMOVED: "Oversmear MC to match data"
+
+        jte[i] = p4.E();
+        jtpt[i] = p4.Pt();
+        jteta[i] = p4.Eta();
+        jtphi[i] = p4.Phi();
+        jty[i] = p4.Rapidity();
 
       met = tools::oplus(mex, mey);
       metphi = atan2(mey, mex);

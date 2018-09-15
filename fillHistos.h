@@ -61,7 +61,8 @@ using std::endl;
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
-
+#include "CondFormats/JetMETObjects/interface/JetResolutionObject.h"
+#include "CondFormats/JetMETObjects/interface/JetResolution.h" 
 // Header file for the classes stored in the TTree if any.
 //#include "Math/GenVector/PxPyPzE4D.h"
 
