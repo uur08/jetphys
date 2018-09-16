@@ -749,13 +749,12 @@ void fillHistos::Loop()
 
           std::random_device rd{};
           std::mt19937 gen{rd()};
-          
-          
+                    
           double m_dR_max = 0.2;
           double min_dR = std::numeric_limits<double>::infinity();
 
           for(int i = 0; i < gen_njt; i++) {
-              
+
               double dR = gp4.DeltaR(p4);
               if (dR > min_dR) continue;
               
@@ -797,7 +796,7 @@ void fillHistos::Loop()
           
 //          If everything is fine, smear the reco jet in simulation
 //          Need to do sorting og jets after smearing
-          p4 *= smearFactor
+          p4 *= smearFactor;
       
       }
 
