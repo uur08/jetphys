@@ -780,9 +780,9 @@ void fillHistos::Loop()
               double dPt = jtpt[i] - jtgenpt[index];
               smearFactor = 1 + (sf - 1.) * dPt / jtpt[i];
 			
-//			       *****Mikko's recipe****
+//			  *****Mikko's recipe****
               
-//					double new_pt =  (jtpt[i] - jtgenpt[i]) * sf + jtgenpt[i];
+//	       double new_pt =  (jtpt[i] - jtgenpt[index]) * sf + jtgenpt[index];
 //             smearFactor = new_pt / jtpt[i];
 
           } else if (sf > 1) {
