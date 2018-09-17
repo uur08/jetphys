@@ -11,8 +11,6 @@
 #include <memory>
 #include <random>
 
-using namespace JME;
-
 void fillHistos::Loop()
 {
   if (fChain == 0) return;
@@ -746,6 +744,7 @@ void fillHistos::Loop()
 
           double smearFactor = 1.;
           bool _matched = false;
+          int index = 0;	 
 
           std::random_device rd{};
           std::mt19937 gen{rd()};
@@ -753,135 +752,69 @@ void fillHistos::Loop()
           double m_dR_max = 0.2;
           double min_dR = std::numeric_limits<double>::infinity();
           static constexpr const double MIN_JET_ENERGY = 1e-2;
-          
-          
-// ****************** only if condition beetween same jet numbers ******************* //
-//          double dR = gp4.DeltaR(p4);
-//
-//          if (dR < m_dR_max) {
-//              double dPt = std::abs(gp4.Pt() - p4.Pt());
-//              if (dPt > 3 * r) continue; //dPtMaxFactor = cms.double(3),  # dPt < 3 * resolution
-//
-//              min_dR = dR;
-//              _matched = true;
-//
-//          }
-          
-// ****************** four vector smearing ******************* //
-//          for(int i = 0; i < gen_njt; i++) {
-//
-//              double dR = gp4.DeltaR(p4);
-//              if (dR > min_dR) continue;
-//
-//              if (dR < m_dR_max) {
-//                  double dPt = std::abs(gp4.Pt() - p4.Pt());
-//                  if (dPt > 3 * r) continue; //dPtMaxFactor = cms.double(3),  # dPt < 3 * resolution
-//
-//                  min_dR = dR;
-//                  _matched = true;
-//
-//              }
-//          }
-//
-//          if (_matched) {
-//              double dPt = p4.Pt() - gp4.Pt();
-//              smearFactor = 1 + (sf - 1.) * dPt / p4.Pt();
-//              cout << "Matched smearing..." << endl;
-//
-//          } else if (sf > 1) {
-//
-//              double sigma = r * std::sqrt(sf * sf - 1);
-//              std::normal_distribution<double> d{0,sigma};
-//              //              cout << d(gen) <<  " " << sigma << endl;
-//              smearFactor = 1. + d(gen);
-//              cout << "Unmatched smearing..." << endl;
-//
-//          } else {
-//              std::cout << "Impossible to smear this jet" << std::endl;
-//          }
-//
-//          if (p4.E() * smearFactor < MIN_JET_ENERGY) {
-//              // Negative or too small smearFactor. We would change direction of the jet
-//              // and this is not what we want.
-//              // Recompute the smearing factor in order to have jet.energy() == MIN_JET_ENERGY
-//              double newSmearFactor = MIN_JET_ENERGY / p4.E();
-//              smearFactor = newSmearFactor;
-//              cout << "New smear factor calculated..." << endl;
-//          }
-//
-//          //          If everything is fine, smear the reco jet in simulation
-//          //          Need to do sorting og jets after smearing
-//          p4 *= smearFactor;
-          
 
           // ****************** compute smearing factor with jet constituents then smear the four vector and re-set the jet constituents ******************* //
           for(int k = 0; k < gen_njt; k++) {
-              
+
               float p1 = jtphi[i];
               float p2 = jtgenphi[k];
-              float e1 = jteta[i];                                  // https://github.com/cms-sw/cmssw/blob/master/DataFormats/Math/interface/deltaR.h#L11-L30 //
+              float e1 = jteta[i];               // https://github.com/cms-sw/cmssw/blob/master/DataFormats/Math/interface/deltaR.h#L11-L30 //
               float e2 = jtgeneta[k];
-              auto dp=std::abs(p1-p2); if (dp>(M_PI)) dp-=(2*M_PI);
+              auto dp = std::abs(p1-p2); if (dp>(M_PI)) dp-=(2*M_PI);
               double dR = sqrt((e1-e2)*(e1-e2) + dp*dp);
-              
-              cout << "Entry: " << _entry << " Reco jet number: " << i << " Gen jet number: " << k << " dR beetween jets " << dR << endl;
-              
-              if (dR > min_dR) continue;
+
+         	  if (dR > min_dR) continue;
 
               if (dR < m_dR_max) {
                   double dPt = std::abs(jtgenpt[k] - jtpt[i]);
-                  if (dPt > 3 * r) {cout << "pT condition failed" << endl; continue;} //dPtMaxFactor = cms.double(3),  # dPt < 3 * resolution
-                  
+                  if (dPt > 3 * r) continue; // should be dPt < 3 * resolution
+
                   min_dR = dR;
                   _matched = true;
-                  
+                  index = k;
+
               }
           }
 
           if (_matched) {
-              double dPt = jtpt[i] - jtgenpt[i];
+              double dPt = jtpt[i] - jtgenpt[index];
               smearFactor = 1 + (sf - 1.) * dPt / jtpt[i];
-              cout << "Matched smearing..." << endl;
+			
+//			       *****Mikko's recipe****
               
-//              Mikko's recipe
-//              double new_pt =  (jtpt[i] - jtgenpt[i]) * sf + jtgenpt[i];
-//              smearFactor = new_pt / jtpt[i];
-              
+//					double new_pt =  (jtpt[i] - jtgenpt[i]) * sf + jtgenpt[i];
+//             smearFactor = new_pt / jtpt[i];
+
           } else if (sf > 1) {
-              
+
               double sigma = r * std::sqrt(sf * sf - 1);
               std::normal_distribution<double> d{0,sigma};
-//              cout << d(gen) <<  " " << sigma << endl;
+              
               smearFactor = 1. + d(gen);
-              cout << "Unmatched smearing..." << endl;
               
           } else {
               std::cout << "Impossible to smear this jet" << std::endl;
           }
-          
+
           if (p4.E() * smearFactor < MIN_JET_ENERGY) {
               // Negative or too small smearFactor. We would change direction of the jet
               // and this is not what we want.
               // Recompute the smearing factor in order to have jet.energy() == MIN_JET_ENERGY
               double newSmearFactor = MIN_JET_ENERGY / p4.E();
               smearFactor = newSmearFactor;
-              cout << "New smear factor calculated..." << endl;
           }
-          
-//          If everything is fine, smear the reco jet in simulation
-//          Need to do sorting og jets after smearing
+
+//		    If everything is fine, smear the reco jet in simulation, need to do sorting jets after smearing...
           p4 *= smearFactor;
-          
-//        Re-setting variables after smearing
+
+//        Re-setting variables after smearing.           
           jte[i] = p4.E();
           jtpt[i] = p4.Pt();
           jteta[i] = p4.Eta();
           jtphi[i] = p4.Phi();
           jty[i] = p4.Rapidity();
-      
+
       }
-
-
 
       met = tools::oplus(mex, mey);
       metphi = atan2(mey, mex);
