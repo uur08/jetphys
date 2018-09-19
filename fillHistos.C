@@ -1327,6 +1327,8 @@ void fillHistos::fillBasic(basicHistos *h)
   } //  GEN-LEVEL dijet mass
    
   // Unfolding studies for dijet mass
+  // Resolution studies are also added inside of this loop 19/9/2018
+  // Resolution studies are performed on well matched dijet pairs
   
   if (gen_njt>=2 && _jp_ismc && njt>=2 && _doRmatrix) { 
   
@@ -1371,7 +1373,7 @@ void fillHistos::fillBasic(basicHistos *h)
 
 			
 			// Filling response matrix 
-			if ((gen_goodmass && gen_ymaxdj >= h->ymin && gen_ymaxdj < h->ymax) && 
+			if ((gen_goodmass && gen_ymaxdj >= h->ymin && gen_ymaxdj < h->ymax && ymaxdj >= h->ymin && ymaxdj < h->ymax) && 
 			    (reco_id) && 
 			    (deltaR_one < 0.2 && deltaR_two < 0.2)) {
 					
@@ -1392,6 +1394,16 @@ void fillHistos::fillBasic(basicHistos *h)
 					
 					assert(h->matrix_gen_reco);
 					h->matrix_gen_reco->Fill(gen_djmass, djmass, _w);
+					
+					/// Filling delta mass (Mjjrec/Mjjgen) vs Mjjgen for resolution studies
+					assert(h->h2jetres);
+					h->h2jetres->Fill(gen_djmass, djmass/gen_djmass, _w);
+					
+					// Filling mass resolutions' mean values to profile plot
+					assert(h->pdjmass_res);
+      					h->pdjmass_res->Fill(gen_djmass, (djmass-gen_djmass)/gen_djmass, _w);
+					
+					
       
       
       }//matching and filling
@@ -1432,8 +1444,8 @@ void fillHistos::fillBasic(basicHistos *h)
 			      fabs(yreco) >= h->ymin && fabs(yreco) < h->ymax )) &&
 			      (reco_id)) {
 			    
-					assert(h->p_bgvsPt);
-					h->p_bgvsPt->Fill(jtpt[j], _ismatched ? 1 : 0, _w);
+					assert(h->pbg_vsPt);
+					h->pbg_vsPt->Fill(jtpt[j], _ismatched ? 1 : 0, _w);
 					
 					
 					
@@ -1475,8 +1487,8 @@ void fillHistos::fillBasic(basicHistos *h)
 			      fabs(yreco) >= h->ymin && fabs(yreco) < h->ymax )) &&
 			      (reco_id)) {
 			    
-					assert(h->p_acceptvsPt);
-					h->p_acceptvsPt->Fill(gen_jtpt[j], _ismatched ? 1 : 0, _w);
+					assert(h->paccept_vsPt);
+					h->paccept_vsPt->Fill(gen_jtpt[j], _ismatched ? 1 : 0, _w);
 					
 					
 					

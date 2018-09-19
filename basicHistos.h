@@ -354,10 +354,14 @@ class basicHistos {
   
   // unfolding studies dijet mass
   TH2D *matrix_gen_reco;
+  // 2D delta mass vs mass plots for resolution studies
+  TH2D *h2jetres;
+  // Profile plot to monitor mean value of mass resolution
+  TProfile *pdjmass_res;
   
   // Acceptance and background studies for Pt
-  TProfile *p_acceptvsPt;
-  TProfile *p_bgvsPt;
+  TProfile *paccept_vsPt;
+  TProfile *pbg_vsPt;
   
 
   TH1D *hpthat;

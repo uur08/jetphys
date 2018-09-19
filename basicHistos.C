@@ -508,11 +508,15 @@ double vx[neta][nbins] =
     
     //unfolding studies dijet mass
     //(Mjjgen,ygen); (Mjjreco,yreco)
-    matrix_gen_reco = new TH2D("matrix_gen_reco","Response_Matrix;Mjj_{gen};Mjj_{reco}",nMassBins,massBoundaries,nMassBins,massBoundaries);
+    matrix_gen_reco = new TH2D("matrix_gen_reco","Response_Matrix;Mjj_{reco};Mjj_{gen}",nMassBins,massBoundaries,nMassBins,massBoundaries);
+    // Delta mass vs mass plots for resolution studies
+    h2jetres = new TH2D("h2jetres","Resolution;Mjj_{gen};#Deltamass",nMassBins,massBoundaries,2,0.,2.);
+    // Profile plot to monitor mean values of mass resolution
+    pdjmass_res = new TProfile("pdjmass_res","",nMassBins,massBoundaries);
     
     // Acceptance and background studies for Pt
-    p_bgvsPt = new TProfile("bgvspt","",nx,&x[0]);
-    p_acceptvsPt = new TProfile("acceptvspt","",nx,&x[0]);
+    pbg_vsPt = new TProfile("pbg_vspt","",nx,&x[0]);
+    paccept_vsPt = new TProfile("paccept_vspt","",nx,&x[0]);
 
     //htrpu = new TH1D("htrpu","",100,-0.5,99.5);
     hitpu = new TH1D("hitpu","",100,-0.5,99.5);
