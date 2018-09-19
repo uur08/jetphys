@@ -354,6 +354,11 @@ class basicHistos {
   
   // unfolding studies dijet mass
   TH2D *matrix_gen_reco;
+  
+  // Acceptance and background studies for Pt
+  TProfile *p_acceptvsPt;
+  TProfile *p_bgvsPt;
+  
 
   TH1D *hpthat;
   TH1D *hpthatnlo;

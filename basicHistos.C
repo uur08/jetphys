@@ -509,6 +509,10 @@ double vx[neta][nbins] =
     //unfolding studies dijet mass
     //(Mjjgen,ygen); (Mjjreco,yreco)
     matrix_gen_reco = new TH2D("matrix_gen_reco","Response_Matrix;Mjj_{gen};Mjj_{reco}",nMassBins,massBoundaries,nMassBins,massBoundaries);
+    
+    // Acceptance and background studies for Pt
+    p_bgvsPt = new TProfile("bgvspt","",nx,&x[0]);
+    p_acceptvsPt = new TProfile("acceptvspt","",nx,&x[0]);
 
     //htrpu = new TH1D("htrpu","",100,-0.5,99.5);
     hitpu = new TH1D("hitpu","",100,-0.5,99.5);

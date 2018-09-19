@@ -804,7 +804,7 @@ void fillHistos::Loop()
               smearFactor = newSmearFactor;
           }
 
-//		    If everything is fine, smear the reco jet in simulation, need to do sorting jets after smearing...
+//        If everything is fine, smear the reco jet in simulation, need to do sorting jets after smearing...
           p4 *= smearFactor;
 
 //        Re-setting variables after smearing.           
@@ -1328,7 +1328,7 @@ void fillHistos::fillBasic(basicHistos *h)
    
   // Unfolding studies for dijet mass
   
-  if (gen_njt>=2 && _jp_ismc && njt>=2) { 
+  if (gen_njt>=2 && _jp_ismc && njt>=2 && _doRmatrix) { 
   
     double deltaR_one, deltaR_two;
     deltaR_one=0;
@@ -1398,7 +1398,96 @@ void fillHistos::fillBasic(basicHistos *h)
      }//second reco jet
    }//first reco jet
   }// Unfolding studies dijet mass
+  
+  
+  //ACCEPTANCE & BACKGROUND studies for Pt
+  
+  if (_jp_ismc) {
+  	
+    double DR;
+    DR=0;
+    
+  	
+  	for (int j = 0; j != njt; ++j) { // reco jet
+  		
+  	     bool _ismatched = false; 
 
+             _j1.SetPtEtaPhiE(jtpt[j],jteta[j],jtphi[j],jte[j]);
+             double yreco = jty[j];
+             bool goodPt = (jtpt[j]>30.);
+	     bool reco_id  = (_pass && _evtid && goodPt && _jetids[j]);
+     
+	     for (int k = 0; k != gen_njt; ++k) { // gen jet
+		
+		_j1_gen.SetPtEtaPhiE(gen_jtpt[k],gen_jteta[k],gen_jtphi[k],gen_jte[k]);
+		double ygen = jtgeny[k];
+		bool gen_goodPt = (gen_jtpt[k]>30.);
+		
+    		DR = ( _j1_gen.DeltaR(_j1));
+		if (DR < 0.2) _ismatched = true;  	
+
+			
+			// Filling background profile plots..
+			if (((gen_goodPt && fabs(ygen) >= h->ymin && fabs(ygen) < h->ymax && 
+			      fabs(yreco) >= h->ymin && fabs(yreco) < h->ymax )) &&
+			      (reco_id)) {
+			    
+					assert(h->p_bgvsPt);
+					h->p_bgvsPt->Fill(jtpt[j], _ismatched ? 1 : 0, _w);
+					
+					
+					
+      
+      
+      }//matching and filling
+     }//gen jet
+   }//reco jet
+  }//Background studies	
+  
+  if (_jp_ismc) {
+  	
+    double DR_two;
+    DR_two=0;
+  	
+  	for (int j = 0; j != gen_njt; ++j) { // gen jet
+  		
+  	     bool _ismatched = false; 
+
+             _j2_gen.SetPtEtaPhiE(gen_jtpt[j],gen_jteta[j],gen_jtphi[j],gen_jte[j]);
+             double ygen = jtgeny[j];
+	     bool gen_goodPt = (gen_jtpt[j]>30.);
+             
+     
+	     for (int k = 0; k != njt; ++k) { // reco jet
+		
+		_j2.SetPtEtaPhiE(jtpt[k],jteta[k],jtphi[k],jte[k]);
+		double yreco = jty[k];
+             	bool goodPt = (jtpt[k]>30.);
+	     	bool reco_id  = (_pass && _evtid && goodPt && _jetids[k]);
+		
+		
+    		DR_two = ( _j2_gen.DeltaR(_j2));
+		if (DR_two < 0.2) _ismatched = true;  	
+
+			
+			// Filling acceptance profile plots..
+			if (((gen_goodPt && fabs(ygen) >= h->ymin && fabs(ygen) < h->ymax && 
+			      fabs(yreco) >= h->ymin && fabs(yreco) < h->ymax )) &&
+			      (reco_id)) {
+			    
+					assert(h->p_acceptvsPt);
+					h->p_acceptvsPt->Fill(gen_jtpt[j], _ismatched ? 1 : 0, _w);
+					
+					
+					
+      
+      
+      }//matching and filling
+     }//reco jet
+   }//gen jet
+  }//Acceptance studies	
+  	
+  // END of ACCEPTANCE & BACKGROUND studies for Pt
   
   if (_debug) cout << "Calculate and fill dijet balance" << endl << flush;
 
