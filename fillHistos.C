@@ -1500,7 +1500,7 @@ void fillHistos::fillBasic(basicHistos *h)
   }//Acceptance studies	
   	
   // END of ACCEPTANCE & BACKGROUND studies for Pt
-  
+   
   if (_debug) cout << "Calculate and fill dijet balance" << endl << flush;
 
   // Calculate and fill dijet balance histograms
@@ -2063,7 +2063,8 @@ void fillHistos::fillBasic(basicHistos *h)
     }
   } // for i
 
-  // Unbiased generator spectrum (for each trigger)
+  /// REMOVING these two loops (Unfolding Mikael and gen spectrum) for making the analyzer faster.... 28/9/2018
+/*  // Unbiased generator spectrum (for each trigger)
   if (_jp_ismc) {
     if (_debug) cout << "Truth loop:" << endl;
     for (int i = 0; i != gen_njt; ++i) {
@@ -2135,7 +2136,7 @@ void fillHistos::fillBasic(basicHistos *h)
         h->hpt_g0_tmp->Fill(gen_jtpt[i]);
       }
     } // for i
-  } // gen spectrum
+  } // gen spectrum*/
 } // fillBasic
 
 
