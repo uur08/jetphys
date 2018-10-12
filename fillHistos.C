@@ -58,6 +58,10 @@ void fillHistos::Loop()
   assert(fmu && !fmu->IsZombie());
   TH2F *h2mu = (TH2F*)fmu->Get("hLSvsRUNxMU"); assert(h2mu);
   //TH2F *h2mu = (TH2F*)fmu->Get("hLSvsRuNxMU_cleaned"); assert(h2mu);
+    
+  //JER Files openin here now...
+  JME::JetResolutionScaleFactor resolution_sf = JME::JetResolutionScaleFactor("CondFormats/JetMETObjects/data/Summer16_25nsV1_MC_SF_AK4PFchs.txt");
+  JME::JetResolution resolution = JME::JetResolution("CondFormats/JetMETObjects/data/Summer16_25nsV1_MC_PtResolution_AK4PFchs.txt");
 
   if (_jp_quick) {
 
@@ -729,18 +733,15 @@ void fillHistos::Loop()
 }
 
       if(_jp_ismc && _doSF){
-          
-          JME::JetResolutionScaleFactor resolution_sf = JME::JetResolutionScaleFactor("CondFormats/JetMETObjects/data/Summer16_25nsV1_MC_SF_AK4PFchs.txt");
-          JME::JetResolution resolution = JME::JetResolution("CondFormats/JetMETObjects/data/Summer16_25nsV1_MC_PtResolution_AK4PFchs.txt");
 
-          JME::JetParameters parameters = {{JME::Binning::JetEta, p4.Eta()}, {JME::Binning::Rho, rho}};
-          JME::JetParameters parameters_1;
-          parameters_1.setJetPt(p4.Pt());
-          parameters_1.setJetEta(p4.Eta());
-          parameters_1.setRho(rho);
+          //Define only one parameter
+          JME::JetParameters parameters;
+          parameters.setJetPt(p4.Pt());
+          parameters.setJetEta(p4.Eta());
+          parameters.setRho(rho);
           
           float sf = resolution_sf.getScaleFactor(parameters);
-          float r = resolution.getResolution(parameters_1);
+          float r = resolution.getResolution(parameters);
 
           double smearFactor = 1.;
           bool _matched = false;
