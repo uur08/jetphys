@@ -360,10 +360,10 @@ public :
   Double_t        *jtgenp4y;//[_njt];   //[njt]
   Double_t        *jtgenp4z;//[_njt];   //[njt]
   Double_t        *jtgenp4t;//[_njt];   //[njt]
-  Float_t         jtgenpt[_njt];   //[njt]
-  Float_t         jtgeny[_njt];   //EXTRA
-  Float_t         jtgeneta[_njt];   //[njt]
-  Float_t         jtgenphi[_njt];   //[njt]
+  Double_t         jtgenpt[_njt];   //[njt]
+  Double_t         jtgeny[_njt];   //EXTRA
+  Double_t        jtgeneta[_njt];   //[njt]
+  Double_t         jtgenphi[_njt];   //[njt]
 
   Int_t           *jtn;//[_njt];   //[njt]
   Int_t           *jtnch;//[_njt];   //[njt]
@@ -383,11 +383,11 @@ public :
   Double_t        *gen_jtp4y;//[_njt];   //[njt]
   Double_t        *gen_jtp4z;//[_njt];   //[njt]
   Double_t        *gen_jtp4t;//[_njt];   //[njt]
-  Float_t         gen_jte[_njt];   //[njt]
-  Float_t         gen_jtpt[_njt];   //[njt]
-  Float_t         gen_jteta[_njt];   //[njt]
-  Float_t         gen_jtphi[_njt];   //[njt]
-  Float_t         gen_jty[_njt];   //[njt]
+  Double_t         gen_jte[_njt];   //[njt]
+  Double_t         gen_jtpt[_njt];   //[njt]
+  Double_t         gen_jteta[_njt];   //[njt]
+  Double_t         gen_jtphi[_njt];   //[njt]
+  Double_t         gen_jty[_njt];   //[njt]
 
   Float_t         rho;
   Float_t         met;
@@ -451,7 +451,7 @@ public :
   void fillBasics(string name);
   void fillBasic(basicHistos *h);
   void writeBasics();
-
+  /*
   void initEtas(string name);
   void fillEtas(string name, Float_t *pt, Float_t *eta, Float_t *phi);
   void fillEta(etaHistos *h, Float_t *pt, Float_t *eta, Float_t *phi);
@@ -465,7 +465,7 @@ public :
   void initRunHistos(string name, double ymin, double ymax);
   void fillRunHistos(string name);
   void writeRunHistos();
-
+  */
   void fillJetID(vector<bool> &id);
 
   void getTriggers();

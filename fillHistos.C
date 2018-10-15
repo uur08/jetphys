@@ -10,6 +10,7 @@
 #include <time.h>
 #include <memory>
 #include <random>
+#include <iomanip>
 
 void fillHistos::Loop()
 {
@@ -302,7 +303,7 @@ void fillHistos::Loop()
   if (_jp_doBasicHistos) {
     initBasics("Standard");
   }
-
+  /*
   if (_jp_doEtaHistos) {
     initEtas("FullEta_Reco");
     if (_jp_ismc && _jp_doEtaHistosMcResponse) {
@@ -311,14 +312,14 @@ void fillHistos::Loop()
       initMcHistos("FullEta_RecoPerGen_vGen");
     }
   }
-
+  
   if (_jp_isdt && _jp_doRunHistos) {
     initRunHistos("Runs",0.,3.);
     initRunHistos("RunsBarrel",0.,1.);
     initRunHistos("RunsTransition",1.,2.);
     initRunHistos("RunsEndcap",2.,3.);
   }
-
+  */ 
   // Report memory usage to avoid malloc problems when writing file
   *ferr << "Beginning Loop() proper:" << endl << flush;
   cout  << "Beginning Loop() proper:" << endl << flush;
@@ -729,18 +730,22 @@ void fillHistos::Loop()
         jtgeny[i] = gp4.Rapidity();
         jtgeneta[i] = gp4.Eta();
         jtgenphi[i] = gp4.Phi();
-
+        
+  
 }
 
       if(_jp_ismc && _doSF){
 
-          //Define only one parameter
+          //Define only one parameter`	
           JME::JetParameters parameters;
           parameters.setJetPt(p4.Pt());
           parameters.setJetEta(p4.Eta());
           parameters.setRho(rho);
           
           float sf = resolution_sf.getScaleFactor(parameters);
+          //float sf = resolution_sf.getScaleFactor(parameters, Variation::UP);
+          //float sf = resolution_sf.getScaleFactor(parameters, Variation::DOWN);
+          
           float r = resolution.getResolution(parameters);
 
           double smearFactor = 1.;
@@ -832,6 +837,7 @@ void fillHistos::Loop()
         gen_jty[i] = genp4.Rapidity();
         //if (gen_jtpt[i]>100) cout<<"McJet Pt: " << gen_jtpt[i] <<  endl;
         
+        
         // for matching
       } // for i
     } // _mc
@@ -906,6 +912,7 @@ void fillHistos::Loop()
       fillBasics("Standard");
     }
 
+    /* 
     if (_jp_doEtaHistos) {
       fillEtas("FullEta_Reco", jtpt, jteta, jtphi);
       if (_jp_ismc && _jp_doEtaHistosMcResponse) {
@@ -914,7 +921,8 @@ void fillHistos::Loop()
         fillMcHistos("FullEta_RecoPerGen_vGen",  jtpt, jtgenpt, jtgenpt, jtgeneta, jtgenphi);
       }
     }
-
+    */
+    /*
     // Run quality checks
     if (_jp_isdt && _jp_doRunHistos) {
       fillRunHistos("Runs");
@@ -922,7 +930,7 @@ void fillHistos::Loop()
       fillRunHistos("RunsTransition");
       fillRunHistos("RunsEndcap");
     }
-
+    */
     // Report memory usage to avoid malloc problems when writing file
     if (jentry%1000000==0) {
       *ferr << Form("Doing Loop(), %dM events:",
@@ -949,9 +957,9 @@ void fillHistos::Loop()
                info.fMemTotal, info.fMemUsed, info.fMemFree,
                info.fSwapTotal, info.fSwapUsed, info.fSwapFree) << endl<<flush;
 
-  if (_jp_doRunHistos)   writeRunHistos();
-  if (_jp_doEtaHistos)   writeEtas();
-  if (_jp_ismc && _jp_doEtaHistos && _jp_doEtaHistosMcResponse) writeMcHistos();
+//  if (_jp_doRunHistos)   writeRunHistos();
+//  if (_jp_doEtaHistos)   writeEtas();
+//  if (_jp_ismc && _jp_doEtaHistos && _jp_doEtaHistosMcResponse) writeMcHistos();
   if (_jp_doBasicHistos) writeBasics(); // this needs to be last, output file closed
 
   // List bad runs
@@ -2053,7 +2061,7 @@ void fillHistos::fillBasic(basicHistos *h)
   } // for i
 */
   // Event statistics
-  for (int i = 1; i != h->hpt_tmp->GetNbinsX()+1; ++i) {
+/*  for (int i = 1; i != h->hpt_tmp->GetNbinsX()+1; ++i) {
     if (h->hpt_tmp->GetBinContent(i)!=0) {
 
       double pt = h->hpt_tmp->GetBinCenter(i);
@@ -2063,7 +2071,7 @@ void fillHistos::fillBasic(basicHistos *h)
       h->hpt_jet->Fill(pt, _w*njet);
     }
   } // for i
-
+*/
   /// REMOVING these two loops (Unfolding Mikael and gen spectrum) for making the analyzer faster.... 28/9/2018
 /*  // Unbiased generator spectrum (for each trigger)
   if (_jp_ismc) {
@@ -2178,7 +2186,7 @@ void fillHistos::writeBasics()
                info.fSwapTotal, info.fSwapUsed, info.fSwapFree) << endl<<flush;
 } // writeBasic
 
-
+/*
 // Initialize eta histograms for trigger bins
 void fillHistos::initEtas(string name)
 {
@@ -2251,16 +2259,16 @@ void fillHistos::initEtas(string name)
                info.fMemTotal, info.fMemUsed, info.fMemFree,
                info.fSwapTotal, info.fSwapUsed, info.fSwapFree) << endl<<flush;
 } // initEtas
-
-
+*/
+/*
 // Loop over basic histogram containers to fill all
 void fillHistos::fillEtas(string name, Float_t* _pt, Float_t* _eta, Float_t* _phi)
 {
   for (unsigned int i = 0; i != _etahistos[name].size(); ++i)
     fillEta(_etahistos[name][i], _pt, _eta, _phi);
 }
-
-
+*/
+/*
 // Fill basic histograms after applying pt, y cuts
 void fillHistos::fillEta(etaHistos *h, Float_t* _pt, Float_t* _eta, Float_t* _phi)
 {
@@ -2320,8 +2328,8 @@ void fillHistos::fillEta(etaHistos *h, Float_t* _pt, Float_t* _eta, Float_t* _ph
     } // for iref (two leading jets)
   } // two or more jets, phase space
 } // fillEta
-
-
+*/
+/*
 // Write and delete histograms
 void fillHistos::writeEtas()
 {
@@ -2347,8 +2355,8 @@ void fillHistos::writeEtas()
                info.fMemTotal, info.fMemUsed, info.fMemFree,
                info.fSwapTotal, info.fSwapUsed, info.fSwapFree) << endl<<flush;
 } // writeEtas
-
-
+*/
+/*
 // Initialize eta histograms for trigger bins
 void fillHistos::initMcHistos(string name)
 {
@@ -2421,8 +2429,8 @@ void fillHistos::initMcHistos(string name)
                info.fMemTotal, info.fMemUsed, info.fMemFree,
                info.fSwapTotal, info.fSwapUsed, info.fSwapFree) << endl<<flush;
 } // initMcHistos
-
-
+*/
+/*
 // Loop over basic histogram containers to fill all
 void fillHistos::fillMcHistos(string name,  Float_t* _recopt, Float_t* _genpt, 
                               Float_t* _pt, Float_t* _eta,    Float_t* _phi)
@@ -2495,8 +2503,8 @@ void fillHistos::fillMcHisto(mcHistos *h,  Float_t* _recopt,  Float_t* _genpt,
     } // for iref (two leading jets)
   } // two or more jets, phase space
 } // fillEta
-
-
+*/
+/*
 // Write and delete histograms
 void fillHistos::writeMcHistos()
 {
@@ -2522,8 +2530,8 @@ void fillHistos::writeMcHistos()
                info.fMemTotal, info.fMemUsed, info.fMemFree,
                info.fSwapTotal, info.fSwapUsed, info.fSwapFree) << endl<<flush;
 } // writeMcHistos
-
-
+*/
+/*
 // Initialize basic histograms for trigger and eta bins
 void fillHistos::initRunHistos(string name, double ymin, double ymax) {
 
@@ -2561,8 +2569,8 @@ void fillHistos::initRunHistos(string name, double ymin, double ymax) {
                info.fMemTotal, info.fMemUsed, info.fMemFree,
                info.fSwapTotal, info.fSwapUsed, info.fSwapFree) << endl<<flush;
 } // initRunHistos
-
-
+*/
+/*
 // Fill run histograms
 void fillHistos::fillRunHistos(string name)
 {
@@ -2673,8 +2681,8 @@ void fillHistos::fillRunHistos(string name)
   } // for i
 
 } // fillRunHistos
-
-
+*/
+/*
 // Write and delete histograms
 void fillHistos::writeRunHistos()
 {
@@ -2702,7 +2710,7 @@ void fillHistos::writeRunHistos()
                info.fMemTotal, info.fMemUsed, info.fMemFree,
                info.fSwapTotal, info.fSwapUsed, info.fSwapFree) << endl<<flush;
 } // writeRunHistos
-
+*/
 
 void fillHistos::fillJetID(vector<bool> &id)
 {
