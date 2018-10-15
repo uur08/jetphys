@@ -1561,7 +1561,7 @@ void fillHistos::fillBasic(basicHistos *h)
 
   if (_debug) cout << "Entering jet loop" << endl << flush;
 
-
+/*
   for (int i = 0; i != njt && _pass; ++i) {
 
     if (_debug) cout << "Loop over jet " << i << "/" << njt << endl << flush;
@@ -2051,7 +2051,7 @@ void fillHistos::fillBasic(basicHistos *h)
       if (r) h->p3rvsnpvW->Fill(ptgen, fabs(jteta[i]), npvgood, resp, _w);
     } // if id && MC
   } // for i
-
+*/
   // Event statistics
   for (int i = 1; i != h->hpt_tmp->GetNbinsX()+1; ++i) {
     if (h->hpt_tmp->GetBinContent(i)!=0) {
