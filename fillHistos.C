@@ -1171,12 +1171,12 @@ void fillHistos::fillBasics(string name)
 void fillHistos::fillBasic(basicHistos *h)
 {
   assert(h);
-  h->hpttmp->Reset();
-  h->hpt_tmp->Reset();
-  if (h->ismc) {
-    assert(h->hpt_g0_tmp);
-    h->hpt_g0_tmp->Reset();
-  }
+  //h->hpttmp->Reset();
+  //h->hpt_tmp->Reset();
+  //if (h->ismc) {
+    //assert(h->hpt_g0_tmp);
+    //h->hpt_g0_tmp->Reset();
+  //}
 
   _w = _w0 * _wt[h->trigname];
   assert(_w);
@@ -1421,9 +1421,10 @@ void fillHistos::fillBasic(basicHistos *h)
   }// Unfolding studies dijet mass
   
   
-  //ACCEPTANCE & BACKGROUND studies for Pt
+  //ACCEPTANCE & BACKGROUND studies for inclusive jets 
   
-  if (_jp_ismc) {
+  // First background... Checking the fraction of reco jets are not matched with gen jets along reco pt spectrum.
+  if (_jp_ismc) { 
   	
     double DR;
     DR=0;
@@ -1454,7 +1455,7 @@ void fillHistos::fillBasic(basicHistos *h)
 			      (reco_id)) {
 			    
 					assert(h->pbg_vsPt);
-					h->pbg_vsPt->Fill(jtpt[j], _ismatched ? 1 : 0, _w);
+					h->pbg_vsPt->Fill(jtpt[j], _ismatched ? 0 : 1, _w); // the reason it is reversed (mathced=0 ; unmatched=1) because BACKGROUND = 1-(matched/all)
 					
 					
 					
@@ -1465,6 +1466,7 @@ void fillHistos::fillBasic(basicHistos *h)
    }//reco jet
   }//Background studies	
   
+  // Now acceptance... Checking the fraction of gen jets mathched with reco jets along gen jets pt spectrum
   if (_jp_ismc) {
   	
     double DR_two;
@@ -1509,7 +1511,7 @@ void fillHistos::fillBasic(basicHistos *h)
   }//Acceptance studies	
   	
   // END of ACCEPTANCE & BACKGROUND studies for Pt
-   
+  /*
   if (_debug) cout << "Calculate and fill dijet balance" << endl << flush;
 
   // Calculate and fill dijet balance histograms
@@ -1565,7 +1567,7 @@ void fillHistos::fillBasic(basicHistos *h)
     h->px31->Fill(npvgood, has3 ? 1 : 0);
     h->px32->Fill(npvgood, has32 ? 1 : 0);
   }
-
+  */
 
   if (_debug) cout << "Entering jet loop" << endl << flush;
 

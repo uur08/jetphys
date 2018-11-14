@@ -30,7 +30,8 @@ class basicHistos {
   double ptmin;
   double ptmax;
   bool ismc;
-
+  
+  /*
   // raw spectrum
   TH1D *hpt;
   TH1D *hpt_pre;
@@ -40,16 +41,17 @@ class basicHistos {
   TH1D *hpt_noevtid;
   TH1D *hptevt;
   TH1D *hpttmp;
-  
+
   // delete-m jackknife
   std::vector<TH1D*> hpt_jk;
   TH2D *h2jk;
-
+  
+  //INCLUSIVE JETS
   TH1D *hpt_tmp;
   TH1D *hpt_evtcount;
   TH1D *hpt_evt;
   TH1D *hpt_jet;
-
+  
   // 1 GeV ins
   TH1D *hpt0;
   
@@ -60,7 +62,9 @@ class basicHistos {
   
   // High chf jets pt spectrum
   TH1D *hpt4;
-
+  //
+  */
+  
   // dijet mass
   TH1D *hdjmass;
   TH1D *hdjmass0;
@@ -76,7 +80,8 @@ class basicHistos {
   TH1D *gen_hdjmass0;
   TH1D *gen_hdj_leading;
   TH1D *gen_hdj_subleading;
-
+  
+  /*
   // basic properties
   TProfile *ppt;
   TProfile *pmass;
@@ -86,17 +91,22 @@ class basicHistos {
   TProfile *punc;
   TH1D *hnpvgood;
   TH1D *hrho;
-
+  */
+  
+  /*
   TProfile *pjec_l1;
   TProfile *pjec_l2l3;
   TProfile *pjec_res;
-  
+  */
+  /*
   TH1D *htrpu;
   TH1D *hitpu;
   TH1D *hootpuearly;
   TH1D *hootpulate;
   TH2D *h2itvsoot;
-
+  */
+  
+  /*
   // pile-up information
   TProfile *pa;
   TProfile *ptrpu;
@@ -114,21 +124,23 @@ class basicHistos {
   TProfile *pitpuvstrpu;
   TH1D *htrpu2;
   TH1D *hjet_vstrpu;
+  */
   TH1D *hlumi_vstrpu;
-
+  
   // luminosity
   TH1D *hlumi;
   TH1D *hlumi2;
   std::map<int, std::map<int, float> > lums;
   double lumsum;
   double lumsum2;
-
+  /*
   // inclusive efficiencies
   TProfile *peff;
   TProfile *pideff;
   TProfile *pvtxeff;
   TProfile *pdqmeff;
-
+  */
+  /*
   // control plots of components (JEC)
   TProfile *pncand;
   TProfile *pnch;
@@ -184,6 +196,7 @@ class basicHistos {
   TH1D *hhef;
   TH1D *hbeta;
   TH1D *hbetastar;
+  
   // control plots of components (JEC tag-and-probe)
   TProfile *pncandtp;
   TProfile *pnchtp;
@@ -256,7 +269,7 @@ class basicHistos {
   //TProfile *pheftp_vstrpu;
   TProfile *pbetatp_vstrpu;
   TProfile *pbetastartp_vstrpu;
-
+  
   // control plots for topology (JEC)
   TH1D *hselpt;
   TH1D *hy;
@@ -290,7 +303,9 @@ class basicHistos {
   TProfile *pmpfx;
   TProfile *pmpfy;
   TProfile *pmpfz;
-
+  */
+  
+  /*
   // Control plots of resolutions:
   // dijet asymmetry binned in dijet pT and 3rd jet pT
   TH3D *hdjasymm;
@@ -312,12 +327,15 @@ class basicHistos {
   TH1D *hyeta2;
   TH2D *hbetabetastar;
   TH2D *hetaphi;
+  */
   
+  /*
   //////// CHF second peak investigation //////
   TH2D *h_low_chf_etaphi;
   TH2D *h_high_chf_etaphi;
-
+  */
   // MC checks
+  /*
   TH1D *hpt_jt30;
   TH1D *hpt_jt60;
   //TH1D *hpt_jt80;
@@ -337,7 +355,8 @@ class basicHistos {
   TH1D *hpt0_jt240;
   TH1D *hpt0_jt300;
   TH1D *hpt0_jt370;
-
+  */
+  /*
   // unfolding studies (Mikael)
   TH2D *mT;
   TH2D *mTf;
@@ -351,6 +370,7 @@ class basicHistos {
   TH1D *myuw;
   TH1D *myf;
   TH1D *myfuw;
+  */
   
   // unfolding studies dijet mass
   TH2D *matrix_gen_reco;
@@ -359,13 +379,14 @@ class basicHistos {
   // Profile plot to monitor mean value of mass resolution
   TProfile *pdjmass_res;
   
-  // Acceptance and background studies for Pt
+  // Acceptance and background studies for inclusive jets
   TProfile *paccept_vsPt;
   TProfile *pbg_vsPt;
   
-
+   
   TH1D *hpthat;
   TH1D *hpthatnlo;
+  /*
   TH1D *hpt_noid_g;
   TH1D *hpt_nojetid_g;
   TH1D *hpt_noevtid_g;
@@ -381,6 +402,9 @@ class basicHistos {
 
   TProfile *ppt_r;
   TProfile *ppt_g;
+  */
+  
+  /*
   // Response closure
   TProfile3D *p3rvsnpv;
   TProfile3D *p3rvsnpvW;
@@ -401,7 +425,8 @@ class basicHistos {
   TProfile *p2dy_guw;
   TProfile2D *pdy_r;
   TProfile2D *pdy_g;
-
+  */
+  
   basicHistos(TDirectory *dir, std::string trigname="", std::string cotrig="",
 	      double ymin = 0., double ymax = 2.0,
 	      double pttrg = 10., double ptmin = 10., double ptmax = 50.,

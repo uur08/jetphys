@@ -109,7 +109,7 @@ double vx[neta][nbins] =
   }
   const int npv = pv.size()-1;
 
-
+  /*
   // raw spectrum
   hpt = new TH1D("hpt","",nx,&x[0]);
   hpt_pre = new TH1D("hpt_pre","",nx,&x[0]); // prescale weighed
@@ -128,7 +128,8 @@ double vx[neta][nbins] =
   //hpt_nojetid->Sumw2();
   //hpt_noevtid->Sumw2();
   //hptevt->Sumw2();
-
+  
+  
   // delete-m jackknife
   hpt_jk.resize(10);
   for (unsigned int i = 0; i != hpt_jk.size(); ++i) {
@@ -143,7 +144,7 @@ double vx[neta][nbins] =
   //
   const double nj = 3;
   vector<double> vnj(nj+1); vnj[0]=0; vnj[1]=1; vnj[2]=2; vnj[3]=3;
-
+  
   // 1 GeV bins for localizing leading jets
   //hpt0 = new TH1D("hpt0","",int(_jp_emax),0.,_jp_emax);
   hpt0 = new TH1D("hpt0","",6500,0.,6500.);
@@ -156,7 +157,7 @@ double vx[neta][nbins] =
   
   // High chf jets pt spectrum
   hpt4 = new TH1D("hpt4","",nx,&x[0]);
-  
+  */
 
   // dijet mass
 
@@ -170,22 +171,15 @@ double vx[neta][nbins] =
   double massBoundaries[nMassBins+1] = {1, 3, 6, 10, 16, 23, 31, 40, 50, 61, 74, 88, 103, 119, 137, 156, 176, 197, 220, 244, 270, 296, 325, 354, 386, 419, 453, 489, 526, 565, 606, 649, 693, 740, 788, 838, 890, 944, 1000, 1058, 1118, 1181, 1246, 1313, 1383, 1455, 1530, 1607, 1687, 1770, 1856, 1945, 2037, 2132, 2231, 2332, 2438, 2546, 2659, 2775, 2895, 3019, 3147, 3279, 3416, 3558, 3704, 3854, 4010, 4171, 4337, 4509, 4686, 4869, 5058, 5253, 5663, 6099, 6808, 7589, 8447, 9391, 10430, 12395, 12827, 14000};
 */
  
-   hdjmass = new TH1D("hdjmass","",nMassBins,massBoundaries);
-   //hdjmass = new TH1D("hdjmass","",nx,&x[0]);
-  
+  hdjmass = new TH1D("hdjmass","",nMassBins,massBoundaries);
   hdjmass0 = new TH1D("hdjmass0","",int(_jp_sqrts),0.,_jp_sqrts);
   hdj_leading = new TH1D("hdj_leading","",nx,&x[0]);
   hdj_subleading = new TH1D("hdj_subleading","",nx,&x[0]);
   
-  //hdjmass0 = new TH1D("hdjmass0","",13000,0.,13000.);
   pdjmass_ptratio = new TProfile("pdjmass_ptratio","",nx,&x[0]);
   pdjmass0_ptratio = new TProfile("pdjmass0_ptratio","",
 				  int(_jp_sqrts),0.,_jp_sqrts);
-  //pdjmass0_ptratio = new TProfile("pdjmass0_ptratio","",13000,0.,13000.);
-  //hdjmass->Sumw2();
-  //hdjmass0->Sumw2();
-  //pdjmass_ptratio->Sumw2();
-  //pdjmass0_ptratio->Sumw2();
+  
   
   //GEN-LEVEL dijet mass
   
@@ -193,7 +187,8 @@ double vx[neta][nbins] =
   gen_hdjmass0 = new TH1D("gen_hdjmass0","",int(_jp_sqrts),0.,_jp_sqrts);
   gen_hdj_leading = new TH1D("gen_hdj_leading","",nx,&x[0]);
   gen_hdj_subleading = new TH1D("gen_hdj_subleading","",nx,&x[0]);
-
+  
+  /*
   // basic properties
   ppt = new TProfile("ppt","",nx,&x[0]);
   pmass = new TProfile("pmass","",nx0,&x0[0]);
@@ -203,16 +198,15 @@ double vx[neta][nbins] =
   punc = new TProfile("punc","",nx,&x[0]);
   hnpvgood = new TH1D("hnpvgood","",100,-0.5,99.5);
   hrho = new TH1D("hrho","",200,0,100);
-  //pmass->Sumw2();
-  //hmass->Sumw2();
-  //hnpvgood->Sumw2();
-  //hrho->Sumw2();
-
+  */
+  
+  /*
   // JEC monitoring
   pjec_l1 = new TProfile("pjec_l1","",nx,&x[0]);
   pjec_l2l3 = new TProfile("pjec_l2l3","",nx,&x[0]);
   pjec_res = new TProfile("pjec_res","",nx,&x[0]);
-
+  */
+  /*
   // pile-up information
   pa = new TProfile("pa","",nx,&x[0]);
   //
@@ -231,27 +225,23 @@ double vx[neta][nbins] =
   pitpuvstrpu = new TProfile("itpuvstrpu","",50,-0.5,49.5);
   htrpu2 = new TH1D("htrpu2","",50,-0.5,49.5);
   hjet_vstrpu = new TH1D("hjet_vstrpu","",50,-0.5,49.5);
+  */
   hlumi_vstrpu = new TH1D("hlumi_vstrpu","",50,-0.5,49.5);
-  //
-  //pa->Sumw2();
-  // prho->Sumw2();
-  //prho1->Sumw2();
-  //prho2->Sumw2();
-  //prho3->Sumw2();
-  //prhovsnpv->Sumw2();
-  //prhovsnpvall->Sumw2();
-  //h2rhovsnpv->Sumw2();
-
+  
+  
   // luminosity
   hlumi = new TH1D("hlumi","",nx,&x[0]);
   hlumi2 = new TH1D("hlumi2","",nx,&x[0]);
-
+  
+  /*
   // inclusive efficiencies
   peff = new TProfile("peff","",nx,&x[0]);
   pideff = new TProfile("pideff","",nx,&x[0]);
   pvtxeff = new TProfile("pvtxeff","",nx,&x[0]);
   pdqmeff = new TProfile("pdqmeff","",nx,&x[0]);
-
+  */
+  
+  /*
   // control plots of components (JEC)
   pncand = new TProfile("pncand","",nx0,&x0[0]);
   pnch = new TProfile("pnch","",nx0,&x0[0]);
@@ -358,36 +348,6 @@ double vx[neta][nbins] =
   pbetastartp_vstrpu = new TProfile("pbetastartp_vstrpu","",50,-0.5,49.5);
   this->ismc = ismc;
 
-  //pncand->Sumw2();
-  //pnch->Sumw2();
-  //pnne->Sumw2();
-  //pnnh->Sumw2();
-  //pchf->Sumw2();
-  //pnef->Sumw2();
-  //pnhf->Sumw2();
-  //hncand->Sumw2();
-  //hnch->Sumw2();
-  //hnne->Sumw2();
-  //hnnh->Sumw2();
-  //hchf->Sumw2();
-  //hnef->Sumw2();
-  //hnhf->Sumw2();
-  ////
-  //pncandtp->Sumw2();
-  //pnchtp->Sumw2();
-  //pnnetp->Sumw2();
-  //pnnhtp->Sumw2();
-  //pchftp->Sumw2();
-  //pneftp->Sumw2();
-  //pnhftp->Sumw2();
-  //hncandtp->Sumw2();
-  //hnchtp->Sumw2();
-  //hnnetp->Sumw2();
-  //hnnhtp->Sumw2();
-  //hchftp->Sumw2();
-  //hneftp->Sumw2();
-  //hnhftp->Sumw2();
-
   // control plots for topology (JEC)
   hselpt = new TH1D("hselpt","",nx,&x[0]);
   hy = new TH1D("hy","",100,-5.,5.); // May 11
@@ -470,11 +430,12 @@ double vx[neta][nbins] =
   hdjmpf->Sumw2();
   hdjasymmtp->Sumw2();
   hdjmpftp->Sumw2();
-
+  */
+  this->ismc = ismc;
 
   // MC checks
-  //htrpu = new TH1D("htrpu","",100,-0.5,99.5);
-  htrpu = new TH1D("htrpu","",120,0.,60.); // for PU reweighing
+  
+  //htrpu = new TH1D("htrpu","",120,0.,60.); // for PU reweighing
   if (this->ismc) {
     //hpt_jt30 = new TH1D("hpt_jt30","",nx,&x[0]);
     //hpt_jt60 = new TH1D("hpt_jt60","",nx,&x[0]);
@@ -496,6 +457,7 @@ double vx[neta][nbins] =
     hpthat = new TH1D("hpthat","",nx,&x[0]);
     hpthatnlo = new TH1D("hpthatnlo","",nx,&x[0]);
     
+    /*
     //unfolding studies (Mikael)
     //mT: (pTgen,ygen); (pTreco,yreco)
     mT = new TH2D("mT","mT(yjet);p_{T,gen};p_{T,reco}",nx,&x[0],nx,&x[0]);
@@ -512,6 +474,7 @@ double vx[neta][nbins] =
     myuw = new TH1D("myuw","my(yreco);p_{T,reco}",nx,&x[0]); // pTreco, yreco
     myf = new TH1D("myf","my(yreco);p_{T,reco}",3485,15,3500); // pTreco, yreco
     myfuw = new TH1D("myfuw","my(yreco);p_{T,reco}",3485,15,3500); // pTreco, yreco
+    */
     
     //unfolding studies dijet mass
     //(Mjjgen,ygen); (Mjjreco,yreco)
@@ -525,6 +488,7 @@ double vx[neta][nbins] =
     pbg_vsPt = new TProfile("pbg_vspt","",nx,&x[0]);
     paccept_vsPt = new TProfile("paccept_vspt","",nx,&x[0]);
 
+    /*
     //htrpu = new TH1D("htrpu","",100,-0.5,99.5);
     hitpu = new TH1D("hitpu","",100,-0.5,99.5);
     hootpuearly = new TH1D("hootpuearly","",100,-0.5,99.5);
@@ -550,7 +514,7 @@ double vx[neta][nbins] =
 
     const double nj = 3;
     vector<double> vnj(nj+1); vnj[0]=0; vnj[1]=1; vnj[2]=2; vnj[3]=3;
-
+    
     // Response closure
     p3rvsnpv = new TProfile3D("p3rvsnpv","",nx,&x[0],ny,&y[0],npv,&pv[0]);
     p3rvsnpvW = new TProfile3D("p3rvsnpvW","",nxW,&xW[0],nyW,&yW[0],npv,&pv[0]);
@@ -595,7 +559,7 @@ double vx[neta][nbins] =
     //p2dy_g->Sumw2();
     //pdy_r->Sumw2();
     //pdy_g->Sumw2();
-
+    */
   } // ismc
 
   curdir->cd();
