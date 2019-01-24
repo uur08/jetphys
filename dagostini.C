@@ -3,6 +3,7 @@
 // Author:  mikko.voutilainen@cern.ch
 // Created: September 2, 2012
 // Updated: June 5, 2015
+//dummy ----
 #include "TFile.h"
 #include "TDirectory.h"
 #include "TList.h"
@@ -38,7 +39,7 @@ using namespace std;
 // Resolution function
 int _jk = 0; // global variable
 bool _jet = false; // global variable
-                                  
+
 Double_t fPtRes(Double_t *x, Double_t *p) {
 
   return ptresolution(x[0], p[0]);
@@ -75,7 +76,7 @@ Double_t smearedAnsatz(Double_t *x, Double_t *p) {
 
   if (!_kernel) _kernel = new TF1("_kernel", smearedAnsatzKernel,
 				  1., _jp_emax/cosh(eta), nk+2);
-  
+
   double res = ptresolution(pt, eta+1e-3) * pt;
   const double sigma = max(0.10, min(res/pt, 0.30));
   double ptmin = pt / (1. + 4.*sigma); // xmin*(1+4*sigma)=x
@@ -178,7 +179,7 @@ void recurseFile(TDirectory *indir, TDirectory *indir2, TDirectory *outdir,
 	 string(obj->GetName())=="hpt_jk9" ||
 	 string(obj->GetName())=="hpt_jk10"
 	 )) {
-      
+
       cout << "+" << flush;
 
       _jk = 0;
@@ -186,12 +187,12 @@ void recurseFile(TDirectory *indir, TDirectory *indir2, TDirectory *outdir,
 	assert( sscanf(obj->GetName(), "hpt_jk%d", &_jk) == 1);
       }
       _jet = TString(obj->GetName()).Contains("hpt_jet");
-      
+
       TH1D *hpt = (TH1D*)obj;
       TH1D *hpt2 = (TH1D*)indir2->Get("hnlo"); assert(hpt2);
       if (hpt2)
         dagostiniUnfold_histo(hpt, hpt2, outdir, ismc);
-    } // hpt                  
+    } // hpt
 
     // Try to process friends similarly
     /*
@@ -208,9 +209,9 @@ void recurseFile(TDirectory *indir, TDirectory *indir2, TDirectory *outdir,
     } // hpt
     */
   } // while key
-  
+
   curdir->cd();
-} // recurseFile    
+} // recurseFile
 
 
 void dagostiniUnfold_histo(TH1D *hpt, TH1D *hnlo, TDirectory *outdir,
@@ -221,7 +222,7 @@ void dagostiniUnfold_histo(TH1D *hpt, TH1D *hnlo, TDirectory *outdir,
   const char *c = id.c_str();
   if (_jk) c = Form("_jk%d",_jk);
   if (_jet) c = "_jet";
-  
+
   _ismcjer = ismc;
 
   // initial fit of the NLO curve to a histogram
@@ -258,7 +259,7 @@ void dagostiniUnfold_histo(TH1D *hpt, TH1D *hnlo, TDirectory *outdir,
 
   // Second fit to properly centered graph
   gnlo2->Fit(fnlo,"QRN");
-  
+
   // Bin-centered data points
   TGraphErrors *gpt = new TGraphErrors(0);
   gpt->SetName(Form("gpt%s",c));
@@ -273,7 +274,7 @@ void dagostiniUnfold_histo(TH1D *hpt, TH1D *hnlo, TDirectory *outdir,
     if (ym>0) {
       tools::SetPoint(gpt, gpt->GetN(), x, ym, 0., ym_err);
     }
-  } // for i                                                 
+  } // for i
 
   // Create smeared theory curve
   double maxpt = _jp_emax/cosh(y1);
@@ -307,7 +308,7 @@ void dagostiniUnfold_histo(TH1D *hpt, TH1D *hnlo, TDirectory *outdir,
 
 
   // Calculate smearing matrix
-  if (_debug) 
+  if (_debug)
     cout << "Generating smearing matrix T..." << flush;
   double tmp_eps = _epsilon;
   _epsilon = 1e-6; // speed up calculations with acceptable loss of precision
@@ -335,7 +336,7 @@ void dagostiniUnfold_histo(TH1D *hpt, TH1D *hnlo, TDirectory *outdir,
       vy.push_back(x2);
     }
   } // for i
-  
+
   // copy over relevant part of hpt
   TH1D *hreco = new TH1D(Form("hreco%s",c),";p_{T,reco} (GeV)",
 			 vy.size()-1,&vy[0]);
@@ -366,7 +367,7 @@ void dagostiniUnfold_histo(TH1D *hpt, TH1D *hnlo, TDirectory *outdir,
   // From http://hepunx.rl.ac.uk/~adye/software/unfold/RooUnfold.html
   // For 1-dimensional true and measured distribution bins Tj and Mi,
   // the response matrix element Rij gives the fraction of events
-  // from bin Tj that end up measured in bin Mi. 
+  // from bin Tj that end up measured in bin Mi.
 
   for (int i = 1; i != mt->GetNbinsX()+1; ++i) {
 
@@ -374,7 +375,7 @@ void dagostiniUnfold_histo(TH1D *hpt, TH1D *hnlo, TDirectory *outdir,
     double ptreco2 = mt->GetXaxis()->GetBinLowEdge(i+1);
     double yreco = fnlo->Integral(ptreco1, ptreco2) / (ptreco2 - ptreco1);
     double ptreco = fnlo->GetX(yreco, ptreco1, ptreco2);
-    
+
     for (int j = 1; j != mt->GetNbinsY()+1; ++j) {
 
       double ptgen1 = min(_jp_emax/cosh(y1), mt->GetYaxis()->GetBinLowEdge(j));
@@ -399,7 +400,7 @@ void dagostiniUnfold_histo(TH1D *hpt, TH1D *hnlo, TDirectory *outdir,
     double ygen = fnlo->Integral(ptgen1, ptgen2);
     mx->SetBinContent(j, ygen);
   }
-  
+
   for (int i = 1; i != mt->GetNbinsX()+1; ++i) {
 
     double yreco(0);
@@ -408,7 +409,7 @@ void dagostiniUnfold_histo(TH1D *hpt, TH1D *hnlo, TDirectory *outdir,
     }
     my->SetBinContent(i, yreco);
   } // for i
-  
+
   TH2D *mtu = (TH2D*)mt->Clone(Form("mtu%s",c));
   for (int i = 1; i != mt->GetNbinsX()+1; ++i) {
     for (int j = 1; j != mt->GetNbinsY()+1; ++j) {
@@ -452,7 +453,7 @@ void dagostiniUnfold_histo(TH1D *hpt, TH1D *hnlo, TDirectory *outdir,
 
 
   _epsilon = tmp_eps;
-  if (_debug) 
+  if (_debug)
     cout << "done." << endl << flush;
 
   /*
@@ -533,12 +534,12 @@ void dagostiniUnfold_histo(TH1D *hpt, TH1D *hnlo, TDirectory *outdir,
     hcorrpt_bin = (TH1D*)hpt->Clone(Form("hcorrpt_bin%s",c));
     hcorrpt_bin->Reset();
     for (int i = 1; i != hTrueBin->GetNbinsX()+1; ++i) {
-      
+
       int j = hpt->FindBin(hTrueBin->GetBinCenter(i));
       hcorrpt_bin->SetBinContent(j, hTrueBin->GetBinContent(i));
       hcorrpt_bin->SetBinError(j, hTrueBin->GetBinError(i));
     }
-    
+
     bool _svd = true;
     if (_svd) {
       int kreg = int(vy.size()/2);
@@ -548,11 +549,11 @@ void dagostiniUnfold_histo(TH1D *hpt, TH1D *hnlo, TDirectory *outdir,
       assert(hTrueSVD);
       hcorrpt_svd = (TH1D*)hTrueSVD->Clone(Form("hcorrpt_svd%s",c));
       delete uSVD; // ensure static members get destroyed before next instance
-      
+
       hcorrpt_svd = (TH1D*)hpt->Clone(Form("hcorrpt_svd%s",c));
       hcorrpt_svd->Reset();
       for (int i = 1; i != hTrueSVD->GetNbinsX()+1; ++i) {
-	
+
 	int j = hpt->FindBin(hTrueSVD->GetBinCenter(i));
 	hcorrpt_svd->SetBinContent(j, hTrueSVD->GetBinContent(i));
 	hcorrpt_svd->SetBinError(j, hTrueSVD->GetBinError(i));
@@ -563,7 +564,7 @@ void dagostiniUnfold_histo(TH1D *hpt, TH1D *hnlo, TDirectory *outdir,
       hcorrpt_svd->Reset();
     }
   } // !_jk
-  
+
   if (_debug)
     cout << "done." << endl << flush;
 
@@ -634,21 +635,21 @@ void dagostiniUnfold_histo(TH1D *hpt, TH1D *hnlo, TDirectory *outdir,
   if (!_jk && !_jet) {
 
     for (int i = 0; i != gpt->GetN(); ++i) {
-      
+
       double x, y, ex, ey;
       tools::GetPoint(gpt, i, x, y, ex, ey);
-      
+
       int j = hcorrpt_bin->FindBin(x);
       double ycorr_bin = hcorrpt_bin->GetBinContent(j);
       double eycorr_bin = hcorrpt_bin->GetBinError(j);
       double ycorr_svd = hcorrpt_svd->GetBinContent(j);
       double eycorr_svd = hcorrpt_svd->GetBinError(j);
-      
+
       double k_bin = (ycorr_bin && y ? ycorr_bin / y : 1.);
       double k_svd = (ycorr_svd && y ? ycorr_svd / y : 1.);
-      
+
       if (!TMath::IsNaN(k_bin)) {
-	
+
 	double dk = 0;
 	//if (eycorr_bin/ycorr_bin > ey/y)
 	dk = eycorr_bin/ycorr_bin*k_bin;
@@ -658,7 +659,7 @@ void dagostiniUnfold_histo(TH1D *hpt, TH1D *hnlo, TDirectory *outdir,
       }
 
       if (!TMath::IsNaN(k_svd)) {
-	
+
 	double dk = 0;
 	//if (eycorr_svd/ycorr_svd > ey/y)
 	dk = eycorr_svd/ycorr_svd*k_svd;
@@ -666,7 +667,7 @@ void dagostiniUnfold_histo(TH1D *hpt, TH1D *hnlo, TDirectory *outdir,
 	tools::SetPoint(gcorrpt_svd, gcorrpt_svd->GetN(),
 			x, ycorr_svd, ex, eycorr_svd);
       }
-      
+
     } // for i
   } // !_jk
 
@@ -746,7 +747,7 @@ void dagostiniUnfold_histo(TH1D *hpt, TH1D *hnlo, TDirectory *outdir,
     hcorrpt_fwd->Write();
     hcorrpt_bin->Write();
     hcorrpt_svd->Write();
-    
+
     // Unfolding covariance matrix
     hCov->Write();
   }
@@ -764,7 +765,7 @@ void dagostiniUnfold_histo(TH1D *hpt, TH1D *hnlo, TDirectory *outdir,
     //gcorrpt->Write();
     hcorrpt_dag->Write("hcorrpt");
   }
-  
+
 } // dagostiniUnfold_histo
 
 
@@ -780,7 +781,7 @@ void drawDagostini(string type) {
   f->cd("Standard");
   TDirectory *din = f->GetDirectory("Standard"); assert(din);
   curdir->cd();
-    
+
   TCanvas *c1 = new TCanvas("c1","c1",1200,800);
   //c1->SetTopMargin(0.20);
   c1->Divide(3,2);//,0.1,0.00);
@@ -905,7 +906,7 @@ void drawDagostini(string type) {
     h->SetXTitle(iy==ny-1 ? "p_{T} (GeV)" : "");
     h->SetYTitle(iy==0 ? "Unfolding correction" : "");
     h->DrawClone("AXIS");
-    
+
     TLine *l = new TLine();
     l->SetLineStyle(kDotted);
     l->DrawLine(ptmin,0.45,ptmin,1.15);
@@ -1001,6 +1002,6 @@ void drawDagostini(string type) {
   c3->cd(0);
   //cmsPrel(type=="DATA" ? _jp_lumi : 0, true);
   c3->SaveAs(Form("pdf/roounfold_ratiotofwd_%s_%s.pdf",a,t));
-  
+
 
 } // drawDagostini
