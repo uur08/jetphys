@@ -286,13 +286,13 @@ basicHistos::basicHistos(TDirectory *dir, string trigname, string cotrig,
   hlumi = new TH1D("hlumi","",nx,&x[0]);
   hlumi2 = new TH1D("hlumi2","",nx,&x[0]);
   
-  /*
+  
   // inclusive efficiencies
   peff = new TProfile("peff","",nx,&x[0]);
   pideff = new TProfile("pideff","",nx,&x[0]);
   pvtxeff = new TProfile("pvtxeff","",nx,&x[0]);
   pdqmeff = new TProfile("pdqmeff","",nx,&x[0]);
-  */
+  
   
   /*
   // control plots of components (JEC)

@@ -1571,14 +1571,14 @@ void fillHistos::fillBasic(basicHistos *h)
 
   if (_debug) cout << "Entering jet loop" << endl << flush;
 
-/*
+
   for (int i = 0; i != njt && _pass; ++i) {
 
     if (_debug) cout << "Loop over jet " << i << "/" << njt << endl << flush;
 
     // adapt variable names from different trees
     double pt = jtpt[i];
-    double eta = jteta[i];
+/*    double eta = jteta[i];
     double energy = jte[i];
     double mass = sqrt(fabs(pow(energy,2) - pow(pt*cosh(eta),2)));
     double y = jty[i];
@@ -1754,14 +1754,14 @@ void fillHistos::fillBasic(basicHistos *h)
       //double met = this->met;
       //double metphi = this->metphi;
       double sumet = this->metsumet;
-
+*/
       // calculate and/or retrieve efficiencies
       double ideff = 1.;
       double vtxeff = 1.;
       double dqmeff = 1.;
       double trigeff = 1.;
       double eff = ideff * vtxeff * dqmeff * trigeff;
-
+/*
       if (_debug) cout << "..raw spectrum" << endl << flush;
 
       // REMOVED: "For trigger efficiency"
@@ -1825,7 +1825,7 @@ void fillHistos::fillBasic(basicHistos *h)
         h->pitpuvstrpu->Fill(trpu, itpu, _w);
         h->hjet_vstrpu->Fill(trpu, _w);
       }
-
+*/
       // efficiencies
       assert(h->peff);
       h->peff->Fill(pt, eff, _w);
@@ -1835,7 +1835,7 @@ void fillHistos::fillBasic(basicHistos *h)
       h->pvtxeff->Fill(pt, vtxeff, _w);
       assert(h->pdqmeff);
       h->pdqmeff->Fill(pt, dqmeff, _w);
-
+/*
       if (_debug) cout << "..control plots of components" << endl << flush;
 
       // control plots of jet components (JEC)
@@ -1923,7 +1923,7 @@ void fillHistos::fillBasic(basicHistos *h)
         
         //
         if (i==0) h->hchf_leading->Fill(jtchf[i], _w);
-	if (i==1) h->hchf_subleading->Fill(jtchf[i], _w);
+	     if (i==1) h->hchf_subleading->Fill(jtchf[i], _w);
         if (i==2) h->hchf_thirdjet->Fill(jtchf[i], _w);
 		  
         
@@ -2059,9 +2059,9 @@ void fillHistos::fillBasic(basicHistos *h)
       // Response closure vs NPV
       if (r) h->p3rvsnpv->Fill(ptgen, jteta[i], npvgood, resp, _w);
       if (r) h->p3rvsnpvW->Fill(ptgen, fabs(jteta[i]), npvgood, resp, _w);
-    } // if id && MC
+    } // if id && MC */
   } // for i
-*/
+
   // Event statistics
 /*  for (int i = 1; i != h->hpt_tmp->GetNbinsX()+1; ++i) {
     if (h->hpt_tmp->GetBinContent(i)!=0) {

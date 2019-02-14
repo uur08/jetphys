@@ -133,13 +133,13 @@ class basicHistos {
   std::map<int, std::map<int, float> > lums;
   double lumsum;
   double lumsum2;
-  /*
+  
   // inclusive efficiencies
   TProfile *peff;
   TProfile *pideff;
   TProfile *pvtxeff;
   TProfile *pdqmeff;
-  */
+  
   /*
   // control plots of components (JEC)
   TProfile *pncand;
