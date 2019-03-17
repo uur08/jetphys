@@ -220,8 +220,57 @@ basicHistos::basicHistos(TDirectory *dir, string trigname, string cotrig,
     mjj_x.push_back(mjj_vx[mjj_ieta][i]);
   } // for i
   const int mjj_nx = mjj_x.size()-1;
+
+  //-------------half_bins for gen spectrum----------------//
   
-    
+  const int mjj_neta_half = 8;
+  const int mjj_nbins_half = 47;
+  double mjj_vx_half[mjj_neta_half][mjj_nbins_half] =
+        {
+            {67, 88, 119, 156, 197, 244, 296, 354, 419, 489, 565, 649, 740, 838, 944, 1058,
+             1181, 1313, 1455, 1607, 1770, 1945, 2132, 2332, 2546, 2775, 3019, 3279, 3558, 3854,
+             4171, 4509, 4869, 5253, 5663, 6099, 6564, 7060, 7589, 8152, 8752, 9391, 10072,
+             10798, 11571, 12395, 14000}, // Eta_0.0-0.5
+            {88, 119, 156, 197, 244, 296, 354, 419, 489, 565, 649, 740, 838, 944, 1058,
+             1181, 1313, 1455, 1607, 1770, 1945, 2132, 2332, 2546, 2775, 3019, 3279, 3558, 3854,
+             4171, 4509, 4869, 5253, 5663, 6099, 6564, 7060, 7589, 8152, 8752, 9391, 10072,
+             10798, 12395, 14000, 0, 0}, //Eta_0.5-1.0
+            {137, 176, 220, 270, 325, 386, 453, 526, 606, 693, 788, 890, 1000,
+             1118, 1246, 1383, 1530, 1687, 1856, 2037, 2231, 2659, 2895, 3279, 3558, 3704,
+             4010, 4337, 4686, 5058, 5455, 5877, 6808, 7320, 7866, 9067, 9726,
+             10430, 11179, 11977, 12827, 14000, 0, 0, 0, 0, 0}, // Eta_1.0-1.5
+            {220, 270, 325, 386, 526, 606, 693, 788, 890, 1000,
+             1118, 1246, 1383, 1530, 1856, 2037, 2438, 2659, 2895, 3147, 3416, 3704,
+             4010, 4686, 5455, 5877, 6328, 6808, 7320, 7866, 8447, 9067, 9726, 10072,
+             10798, 11571, 12395, 14000, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Eta_1.5-2.0
+            {354, 419, 489, 649, 740, 838, 944, 1058,
+             1181, 1313, 1455, 1770, 1945, 2132, 2332, 2546, 2775, 3019, 3279, 3558,
+             3854, 4171, 4509, 5253, 6099, 6564, 7589, 8152, 8752, 10072,
+             11571, 12395, 14000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, //Eta_2.0-2.5
+            {354, 419, 489, 649, 740, 838, 944, 1058,
+             1181, 1313, 1455, 1770, 1945, 2132, 2332, 2546, 2775, 3019, 3279, 3558,
+             3854, 4171, 4509, 5253, 6099, 6564, 7589, 8152, 8752, 10072,
+             11571, 12395, 14000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, //dummy
+            {354, 419, 489, 649, 740, 838, 944, 1058,
+             1181, 1313, 1455, 1770, 1945, 2132, 2332, 2546, 2775, 3019, 3279, 3558,
+             3854, 4171, 4509, 5253, 6099, 6564, 7589, 8152, 8752, 10072,
+             11571, 12395, 14000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, //dummy
+            {354, 419, 489, 649, 740, 838, 944, 1058,
+             1181, 1313, 1455, 1770, 1945, 2132, 2332, 2546, 2775, 3019, 3279, 3558,
+             3854, 4171, 4509, 5253, 6099, 6564, 7589, 8152, 8752, 10072,
+             11571, 12395, 14000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} //dummy
+
+        };
+
+  int mjj_ieta_half = int(0.5 * (ymin + ymax) / 0.5);
+  vector<double> mjj_x_half;
+  for (int i = 0; i != mjj_nbins_half && mjj_vx_half[mjj_ieta_half][i] != 0; ++i)
+    {
+      mjj_x_half.push_back(mjj_vx_half[mjj_ieta_half][i]);
+    } // for i
+  const int mjj_nx_half = mjj_x_half.size() - 1;
+  
+  //--------------------------------------------------//  
 
  
   hdjmass = new TH1D("hdjmass","",mjj_nx,&mjj_x[0]);
@@ -236,7 +285,11 @@ basicHistos::basicHistos(TDirectory *dir, string trigname, string cotrig,
   
   //GEN-LEVEL dijet mass
   
-  gen_hdjmass = new TH1D("gen_hdjmass","",mjj_nx,&mjj_x[0]);
+  if (_doUnfoldBins) {
+    gen_hdjmass = new TH1D("gen_hdjmass","",mjj_nx_half,&mjj_x_half[0]);  }
+  else {
+    gen_hdjmass = new TH1D("gen_hdjmass","",mjj_nx,&mjj_x[0]);  }
+  
   gen_hdjmass0 = new TH1D("gen_hdjmass0","",int(_jp_sqrts),0.,_jp_sqrts);
   gen_hdj_leading = new TH1D("gen_hdj_leading","",nx,&x[0]);
   gen_hdj_subleading = new TH1D("gen_hdj_subleading","",nx,&x[0]);
@@ -531,7 +584,12 @@ basicHistos::basicHistos(TDirectory *dir, string trigname, string cotrig,
     
     //unfolding studies dijet mass
     //(Mjjgen,ygen); (Mjjreco,yreco)
-    matrix_gen_reco = new TH2D("matrix_gen_reco","Response_Matrix;Mjj_{reco};Mjj_{gen}",mjj_nx,&mjj_x[0],mjj_nx,&mjj_x[0]);
+    if (_doUnfoldBins) {
+      matrix_gen_reco = new TH2D("matrix_gen_reco","Response_Matrix;Mjj_{reco};Mjj_{gen}",mjj_nx,&mjj_x[0],mjj_nx_half,&mjj_x_half[0]);
+    }
+    else {
+      matrix_gen_reco = new TH2D("matrix_gen_reco","Response_Matrix;Mjj_{reco};Mjj_{gen}",mjj_nx,&mjj_x[0],mjj_nx,&mjj_x[0]);
+    }
     // Delta mass vs mass plots for resolution studies
     h2jetres = new TH2D("h2jetres","Resolution;Mjj_{gen};#Deltamass",mjj_nx,&mjj_x[0],300,0.,3.);
     // Profile plot to monitor mean values of mass resolution
