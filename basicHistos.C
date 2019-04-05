@@ -584,12 +584,8 @@ basicHistos::basicHistos(TDirectory *dir, string trigname, string cotrig,
     
     //unfolding studies dijet mass
     //(Mjjgen,ygen); (Mjjreco,yreco)
-    if (_doUnfoldBins) {
-      matrix_gen_reco = new TH2D("matrix_gen_reco","Response_Matrix;Mjj_{reco};Mjj_{gen}",mjj_nx,&mjj_x[0],mjj_nx_half,&mjj_x_half[0]);
-    }
-    else {
-      matrix_gen_reco = new TH2D("matrix_gen_reco","Response_Matrix;Mjj_{reco};Mjj_{gen}",mjj_nx,&mjj_x[0],mjj_nx,&mjj_x[0]);
-    }
+    matrix_gen_reco = new TH2D("matrix_gen_reco","Response_Matrix;Mjj_{reco};Mjj_{gen}",mjj_nx,&mjj_x[0],mjj_nx_half,&mjj_x_half[0]);
+    //matrix_gen_reco = new TH2D("matrix_gen_reco","Response_Matrix;Mjj_{reco};Mjj_{gen}",mjj_nx,&mjj_x[0],mjj_nx,&mjj_x[0]);
     // Delta mass vs mass plots for resolution studies
     h2jetres = new TH2D("h2jetres","Resolution;Mjj_{gen};#Deltamass",mjj_nx,&mjj_x[0],300,0.,3.);
     // Profile plot to monitor mean values of mass resolution
