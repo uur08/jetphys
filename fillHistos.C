@@ -1402,7 +1402,7 @@ void fillHistos::fillBasic(basicHistos *h)
 				        }
 					
 					assert(h->matrix_gen_reco);
-					h->matrix_gen_reco->Fill(gen_djmass, djmass, _w);
+					h->matrix_gen_reco->Fill(djmass, gen_djmass, _w);
 					
 					/// Filling delta mass (Mjjrec/Mjjgen) vs Mjjgen for resolution studies
 					assert(h->h2jetres);
