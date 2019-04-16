@@ -332,7 +332,7 @@ basicHistos::basicHistos(TDirectory *dir, string trigname, string cotrig,
 
           {354, 419, 489, 565, 649, 740, 838, 944, 1058,
            1181, 1313, 1455, 1607, 1770, 1945, 2132, 2332, 2546, 2775, 3019, 3279, 3558,
-           3854, 4171, 4509, 4869, 5253, 5663, 6099, 6564, 7060, 7589, 8152, 8752, 9391, 10072,
+          3854, 4171, 4509, 4869, 5253, 5663, 6099, 6564, 7060, 7589, 8152, 8752, 9391, 10072,
            10798, 11571, 12395, 13272, 14000, 0, 0, 0, 0, 0, 0, 0}, //dummy
 
           {354, 419, 489, 565, 649, 740, 838, 944, 1058,
@@ -359,7 +359,10 @@ basicHistos::basicHistos(TDirectory *dir, string trigname, string cotrig,
 
  
   hdjmass = new TH1D("hdjmass","",mjj_nx,&mjj_x[0]);
+  hdjmass_half = new TH1D("hdjmass_half","",mjj_nx_half,&mjj_x_half[0]);
   hdjmass0 = new TH1D("hdjmass0","",int(_jp_sqrts),0.,_jp_sqrts);
+  
+  djmass_matched = new TH1D("hdjmass_matched","",mjj_nx,&mjj_x[0]); //matched reco jets with gen jets under dR criteria
   hdj_leading = new TH1D("hdj_leading","",nx,&x[0]);
   hdj_subleading = new TH1D("hdj_subleading","",nx,&x[0]);
   
@@ -370,12 +373,12 @@ basicHistos::basicHistos(TDirectory *dir, string trigname, string cotrig,
   
   //GEN-LEVEL dijet mass
   
-  if (_doUnfoldBins) {
-    gen_hdjmass = new TH1D("gen_hdjmass","",mjj_nx_half,&mjj_x_half[0]);  }
-  else {
-    gen_hdjmass = new TH1D("gen_hdjmass","",mjj_nx,&mjj_x[0]);  }
   
+  gen_hdjmass = new TH1D("gen_hdjmass","",mjj_nx,&mjj_x[0]);
+  gen_hdjmass_half = new TH1D("gen_hdjmass_half","",mjj_nx_half,&mjj_x_half[0]);  
   gen_hdjmass0 = new TH1D("gen_hdjmass0","",int(_jp_sqrts),0.,_jp_sqrts);
+ 
+  gen_djmass_matched = new TH1D("gen_hdjmass_matched","",mjj_nx,&mjj_x[0]); // matched gen jets with reco under dR criteria
   gen_hdj_leading = new TH1D("gen_hdj_leading","",nx,&x[0]);
   gen_hdj_subleading = new TH1D("gen_hdj_subleading","",nx,&x[0]);
   

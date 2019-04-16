@@ -1275,7 +1275,10 @@ void fillHistos::fillBasic(basicHistos *h)
       
       assert(h->hdjmass);
       h->hdjmass->Fill(djmass, _w);
-      
+                 
+      assert(h->hdjmass_half);
+      h->hdjmass_half->Fill(djmass, _w);
+
       assert(h->hdjmass0);
       h->hdjmass0->Fill(djmass, _w);
       
@@ -1319,7 +1322,10 @@ void fillHistos::fillBasic(basicHistos *h)
       
       assert(h->gen_hdjmass);
       h->gen_hdjmass->Fill(gen_djmass, _w);
-      
+       
+      assert(h->gen_hdjmass_half);
+      h->gen_hdjmass_half->Fill(gen_djmass, _w);
+
       assert(h->gen_hdjmass0);
       h->gen_hdjmass0->Fill(gen_djmass, _w);
       
@@ -1354,7 +1360,36 @@ void fillHistos::fillBasic(basicHistos *h)
     double gen_djmass = (_j1_gen+_j2_gen).M();
     double gen_ymaxdj = max(fabs(gen_jty[0]),fabs(gen_jty[1]));
     bool gen_goodmass = (gen_jtpt[0]>30. && gen_jtpt[1]>30.);
-	
+    
+
+    //RECO-LEVEL calculation
+
+    map<double, int> ptorder;
+    for (int i = 0; i != njt; ++i) {
+      double idx = -jtpt[i]; // note minus
+      while (ptorder.find(idx) != ptorder.end()) idx += 1e-5*jteta[i];
+      assert(ptorder.find(idx)==ptorder.end());
+      ptorder[idx] = i;
+    }
+    int i0 = (ptorder.begin())->second;
+    int i1 = (++ptorder.begin())->second;
+
+    // We are within a loop, so the class variables _j1 and _j2 should not be initialized here
+    _j1.SetPtEtaPhiE(jtpt[i0],jteta[i0],jtphi[i0],jte[i0]);
+    _j2.SetPtEtaPhiE(jtpt[i1],jteta[i1],jtphi[i1],jte[i1]);
+
+			double djmass = (_j1+_j2).M();
+			double ymaxdj = max(fabs(jty[i0]),fabs(jty[i1]));
+			bool goodmass = (jtpt[i0]>30. && jtpt[i1]>30.);
+		        bool reco_id  = (_pass && _evtid && goodmass && _jetids[i0] && _jetids[i1]);
+  
+  /*cout << "EVENT:" << _entry << "--" << njt << " jet in event." << endl;
+  cout << "First reco jet pt: " << jtpt[i0] << endl;  
+  cout << "Second reco jet pt: " << jtpt[i1] << endl;
+  cout << endl;
+  cout << endl;
+ */
+ /* //COMMENTING OUT THIS LOOP 16.4.2019! 	
     //RECO-LEVEL calculation
     //Pairing every reco jet to each other in the event without using ordering map
 	for (int j = 0; j != njt; ++j) { // first reco jet
@@ -1375,7 +1410,7 @@ void fillHistos::fillBasic(basicHistos *h)
 			//Lets say jet[j],jet[k] pair passes every condition and fills the histo.jet[k],jet[j] pair will do the same! 
 			//For preventing double counting reco mass, we can determine leading and subleading jet once. if (_j1.Pt() >  _j2.Pt()) 
 			//If they are reversed in the loop, we can just skip this pair without filling.
-			
+  */			
 			
 			deltaR_one = min( _j1_gen.DeltaR(_j1), _j1_gen.DeltaR(_j2) );
 			deltaR_two = min( _j2_gen.DeltaR(_j1), _j2_gen.DeltaR(_j2) );
@@ -1386,7 +1421,7 @@ void fillHistos::fillBasic(basicHistos *h)
 			    (reco_id) && 
 			    (deltaR_one < 0.2 && deltaR_two < 0.2)) {
 					
-					if (_debug_dj){
+					/*if (_debug_dj){
 					cout << "Recojet investigation"<<endl;
 					cout << "We have " << njt << " reco jets in event " << _entry << endl;
 					cout << "First jet---> " << j << ". jet of the event" << endl;
@@ -1399,10 +1434,16 @@ void fillHistos::fillBasic(basicHistos *h)
 					cout << "+++++++++++++++++++++++++++++++++++++++++++" << endl;
 					cout << endl;
 					cout << endl;
-				        }
+				        }*/
 					
 					assert(h->matrix_gen_reco);
 					h->matrix_gen_reco->Fill(djmass, gen_djmass, _w);
+					
+					assert(h->djmass_matched);
+					h->djmass_matched->Fill(djmass, _w);
+					
+					assert(h->gen_djmass_matched);
+					h->gen_djmass_matched->Fill(gen_djmass, _w);
 					
 					/// Filling delta mass (Mjjrec/Mjjgen) vs Mjjgen for resolution studies
 					assert(h->h2jetres);
@@ -1416,8 +1457,8 @@ void fillHistos::fillBasic(basicHistos *h)
       
       
       }//matching and filling
-     }//second reco jet
-   }//first reco jet
+    // }//second reco jet
+   //}//first reco jet
   }// Unfolding studies dijet mass
   
   

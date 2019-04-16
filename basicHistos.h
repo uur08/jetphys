@@ -67,7 +67,10 @@ class basicHistos {
   
   // dijet mass
   TH1D *hdjmass;
+  TH1D *hdjmass_half;
   TH1D *hdjmass0;
+  
+  TH1D *djmass_matched; // Matched reco jets with gen jets under dR criteria
   TH1D *hdj_leading;
   TH1D *hdj_subleading;
   
@@ -77,7 +80,10 @@ class basicHistos {
   // GEN-LEVEL dijet mass
   
   TH1D *gen_hdjmass;
+  TH1D *gen_hdjmass_half;
   TH1D *gen_hdjmass0;
+  
+  TH1D *gen_djmass_matched; // Matched gen jets with reco under dR criteria
   TH1D *gen_hdj_leading;
   TH1D *gen_hdj_subleading;
   
