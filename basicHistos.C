@@ -178,32 +178,32 @@ basicHistos::basicHistos(TDirectory *dir, string trigname, string cotrig,
   
   //new mass binning (Paolo)
   const int mjj_neta = 8;
-  const int mjj_nbins = 34;
+  const int mjj_nbins = 33;
   double mjj_vx[mjj_neta][mjj_nbins] =
       {
-          {67, 88, 119, 156, 197, 244, 296, 354, 419, 489, 565, 649, 740, 838, 944, 1181, 1383, 1607, 1856, 
+          {67, 88, 119, 156, 197, 244, 296, 354, 419, 489, 565, 649, 740, 944, 1181, 1383, 1607, 1856, 
            2132, 2438, 2775, 3147, 3558, 4010, 4509, 5058, 5663, 6328, 7060, 7866, 8752, 9726, 10000}, // Eta_0.0-0.5
 
-          {88, 119, 156, 197, 244, 296, 354, 419, 489, 565, 649, 740, 838, 944, 1181, 1383, 1607, 1856, 
+          {88, 119, 156, 197, 244, 296, 354, 419, 489, 565, 649, 740, 944, 1181, 1383, 1607, 1856, 
            2132, 2438, 2775, 3147, 3558, 4010, 4509, 5058, 5663, 6328, 7060, 7866, 8752, 9726, 10000, 0}, //Eta_0.5-1.0
 
-          {137, 176, 220, 270, 325, 386, 453, 526, 606, 693, 788, 890, 1000, 1181, 1383, 1607, 1856, 
+          {137, 176, 220, 270, 325, 386, 453, 526, 606, 693, 788, 890, 1181, 1383, 1607, 1856, 
            2132, 2438, 2775, 3147, 3558, 4010, 4509, 5058, 5663, 6328, 7060, 7866, 8752, 9726, 10000, 0, 0}, // Eta_1.0-1.5
 
-          {220, 270, 325, 386, 453, 526, 606, 693, 788, 890, 1000, 1181, 1383, 1607, 1856, 2132, 2438, 2775, 3147, 3558, 4010, 
+          {220, 270, 325, 386, 453, 526, 606, 693, 788, 890, 1181, 1383, 1607, 1856, 2132, 2438, 2775, 3147, 3558, 4010, 
            4509, 5058, 5663, 6328, 7060, 7866, 8752, 9726, 10000, 0, 0, 0, 0}, // Eta_1.5-2.0
 
-          {354, 419, 489, 565, 649, 740, 838, 944, 1181, 1383, 1607, 1856, 2132, 2438, 2775, 3147, 3558, 4010, 4509, 5058, 5663, 6328, 7060, 
+          {354, 419, 489, 565, 649, 740, 944, 1181, 1383, 1607, 1856, 2132, 2438, 2775, 3147, 3558, 4010, 4509, 5058, 5663, 6328, 7060, 
            7866, 8752, 9726, 10000, 0, 0, 0, 0, 0, 0, 0}, //Eta_2.0-2.5
 
           {354, 419, 489, 565, 649, 740, 838, 944, 1181, 1383, 1607, 1856, 2132, 2438, 2775, 3147, 3558, 4010, 4509, 5058, 5663, 6328, 7060, 
-           7866, 8752, 9726, 10000, 0, 0, 0, 0, 0, 0, 0}, //dummy bin
+           7866, 8752, 9726, 10000, 0, 0, 0, 0, 0, 0}, //dummy bin
 
           {354, 419, 489, 565, 649, 740, 838, 944, 1181, 1383, 1607, 1856, 2132, 2438, 2775, 3147, 3558, 4010, 4509, 5058, 5663, 6328, 7060, 
-           7866, 8752, 9726, 10000, 0, 0, 0, 0, 0, 0, 0}, //dummy bin
+           7866, 8752, 9726, 10000, 0, 0, 0, 0, 0, 0}, //dummy bin
 
           {354, 419, 489, 565, 649, 740, 838, 944, 1181, 1383, 1607, 1856, 2132, 2438, 2775, 3147, 3558, 4010, 4509, 5058, 5663, 6328, 7060, 
-           7866, 8752, 9726, 10000, 0, 0, 0, 0, 0, 0, 0} //dummy bin
+           7866, 8752, 9726, 10000, 0, 0, 0, 0, 0, 0} //dummy bin
       };
 
   /*const int mjj_neta = 8;
@@ -266,7 +266,7 @@ basicHistos::basicHistos(TDirectory *dir, string trigname, string cotrig,
           {67, 119, 197, 296, 419, 565, 740, 944, 1383, 1856, 2438, 3147, 4010, 5058, 6328, 7866, 9726}, // Eta_0.0-0.5
 
           {88, 156, 244, 354, 489, 649, 838, 1181, 1607, 2132, 2775, 3558, 4509, 5663, 7060, 8752, 10000}, //Eta_0.5-1.0
-
+          
           {137, 220, 325, 453, 606, 788, 1000, 1383, 1856, 2438, 3147, 4010, 5058, 6328, 7866, 9726, 0}, // Eta_1.0-1.5
 
           {220, 325, 453, 606, 788, 1000, 1383, 1856, 2438, 3147, 4010, 5058, 6328, 7866, 9726, 0, 0}, // Eta_1.5-2.0
@@ -358,7 +358,12 @@ basicHistos::basicHistos(TDirectory *dir, string trigname, string cotrig,
   gen_hdjmass_half = new TH1D("gen_hdjmass_half","",mjj_nx_half,&mjj_x_half[0]);  
   gen_hdjmass0 = new TH1D("gen_hdjmass0","",int(_jp_sqrts),0.,_jp_sqrts);
  
-  gen_djmass_matched = new TH1D("gen_hdjmass_matched","",mjj_nx,&mjj_x[0]); // matched gen jets with reco under dR criteria
+  gen_djmassX0 = new TH1D("gen_djmassX0","",mjj_nx,&mjj_x[0]); // matched gen jets with reco under dR criteria (reco and gen eta bin)
+  gen_djmassX1 = new TH1D("gen_djmassX1","",mjj_nx,&mjj_x[0]); // matched gen jets with reco under dR criteria (only gen eta bin)
+  gen_djmassX2 = new TH1D("gen_djmassX2","",mjj_nx,&mjj_x[0]); // matched gen jets with reco under loose dR criteria (only gen eta bin)
+  gen_djmassX3 = new TH1D("gen_djmassX3","",mjj_nx,&mjj_x[0]); // matched gen jets with reco under dR criteria (Third reco jet included to dR calculation )
+  gen_djmassX4 = new TH1D("gen_djmassX4","",mjj_nx,&mjj_x[0]); // matched gen jets with reco under dR criteria (Something else)
+
   gen_hdj_leading = new TH1D("gen_hdj_leading","",nx,&x[0]);
   gen_hdj_subleading = new TH1D("gen_hdj_subleading","",nx,&x[0]);
   

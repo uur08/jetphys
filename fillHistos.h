@@ -534,7 +534,7 @@ private:
   int _evtcounter;
   int _totcounter;
 
-  TLorentzVector _j1, _j2;
+  TLorentzVector _j1, _j2, _j3, _j4;
   TLorentzVector _j1_gen, _j2_gen;
 
   /////////////////////////////////////////////////////////////////////////////

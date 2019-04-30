@@ -1347,9 +1347,11 @@ void fillHistos::fillBasic(basicHistos *h)
   
   if (gen_njt>=2 && _jp_ismc && njt>=2 && _doRmatrix) { 
   
-    double deltaR_one, deltaR_two;
+    double deltaR_one, deltaR_two, deltaR_onethree, deltaR_twothree;
     deltaR_one=0;
     deltaR_two=0;
+    deltaR_onethree=0;
+    deltaR_twothree=0;
     
     
 	
@@ -1373,50 +1375,25 @@ void fillHistos::fillBasic(basicHistos *h)
     }
     int i0 = (ptorder.begin())->second;
     int i1 = (++ptorder.begin())->second;
-
+   // int i2 = (ptorder.begin(),3)->second;
+    
     // We are within a loop, so the class variables _j1 and _j2 should not be initialized here
     _j1.SetPtEtaPhiE(jtpt[i0],jteta[i0],jtphi[i0],jte[i0]);
     _j2.SetPtEtaPhiE(jtpt[i1],jteta[i1],jtphi[i1],jte[i1]);
-
+    if (njt>2) _j3.SetPtEtaPhiE(jtpt[2],jteta[2],jtphi[2],jte[2]);
+			
 			double djmass = (_j1+_j2).M();
 			double ymaxdj = max(fabs(jty[i0]),fabs(jty[i1]));
 			bool goodmass = (jtpt[i0]>30. && jtpt[i1]>30.);
 		        bool reco_id  = (_pass && _evtid && goodmass && _jetids[i0] && _jetids[i1]);
-  
-  /*cout << "EVENT:" << _entry << "--" << njt << " jet in event." << endl;
-  cout << "First reco jet pt: " << jtpt[i0] << endl;  
-  cout << "Second reco jet pt: " << jtpt[i1] << endl;
-  cout << endl;
-  cout << endl;
- */
- /* //COMMENTING OUT THIS LOOP 16.4.2019! 	
-    //RECO-LEVEL calculation
-    //Pairing every reco jet to each other in the event without using ordering map
-	for (int j = 0; j != njt; ++j) { // first reco jet
-
-             _j1.SetPtEtaPhiE(jtpt[j],jteta[j],jtphi[j],jte[j]);
-     
-	     for (int k = j+1; k != njt; ++k) { // second reco jet
-		
-		_j2.SetPtEtaPhiE(jtpt[k],jteta[k],jtphi[k],jte[k]);
-    
-			double djmass = (_j1+_j2).M();
-			double ymaxdj = max(fabs(jty[j]),fabs(jty[k]));
-			bool goodmass = (jtpt[j]>30. && jtpt[k]>30.);
-		        bool reco_id  = (_pass && _evtid && goodmass && _jetids[j] && _jetids[k]);
-    
-         	        //Matching gen-reco with dR
-			//We are apperantly double counting reco mass!!! 
-			//Lets say jet[j],jet[k] pair passes every condition and fills the histo.jet[k],jet[j] pair will do the same! 
-			//For preventing double counting reco mass, we can determine leading and subleading jet once. if (_j1.Pt() >  _j2.Pt()) 
-			//If they are reversed in the loop, we can just skip this pair without filling.
-  */			
 			
 			deltaR_one = min( _j1_gen.DeltaR(_j1), _j1_gen.DeltaR(_j2) );
 			deltaR_two = min( _j2_gen.DeltaR(_j1), _j2_gen.DeltaR(_j2) );
+                        deltaR_onethree = min (min (_j1_gen.DeltaR(_j1), _j1_gen.DeltaR(_j2)), _j1_gen.DeltaR(_j3));
+                        deltaR_twothree = min (min (_j2_gen.DeltaR(_j1), _j2_gen.DeltaR(_j2)), _j2_gen.DeltaR(_j3));
 
 			
-			// Filling response matrix 
+			// Filling response matrix //
 			if ((gen_goodmass && gen_ymaxdj >= h->ymin && gen_ymaxdj < h->ymax && ymaxdj >= h->ymin && ymaxdj < h->ymax) && 
 			    (reco_id) && 
 			    (deltaR_one < 0.2 && deltaR_two < 0.2)) {
@@ -1442,8 +1419,8 @@ void fillHistos::fillBasic(basicHistos *h)
 					assert(h->djmass_matched);
 					h->djmass_matched->Fill(djmass, _w);
 					
-					assert(h->gen_djmass_matched);
-					h->gen_djmass_matched->Fill(gen_djmass, _w);
+					assert(h->gen_djmassX0);
+					h->gen_djmassX0->Fill(gen_djmass, _w);
 					
 					/// Filling delta mass (Mjjrec/Mjjgen) vs Mjjgen for resolution studies
 					assert(h->h2jetres);
@@ -1452,13 +1429,38 @@ void fillHistos::fillBasic(basicHistos *h)
 					// Filling mass resolutions' mean values to profile plot
 					assert(h->pdjmass_res);
       					h->pdjmass_res->Fill(gen_djmass, (djmass-gen_djmass)/gen_djmass, _w);
-					
-					
+			
+      			}//matching and filling
+			
+			// Investigation of lost gen jets
+			
+			else if ((gen_goodmass && gen_ymaxdj >= h->ymin && gen_ymaxdj < h->ymax) && (reco_id) &&   		
+      				 (deltaR_one < 0.2 && deltaR_two < 0.2)){
+					// CASE 1: No check on reco jet eta bin
+					h->gen_djmassX1->Fill(gen_djmass, _w);
+			}
       
-      
-      }//matching and filling
-    // }//second reco jet
-   //}//first reco jet
+
+			else if ((gen_goodmass && gen_ymaxdj >= h->ymin && gen_ymaxdj < h->ymax) && (reco_id) &&   		
+      				(deltaR_one < 0.4 && deltaR_two < 0.4)){
+					
+					//CASE 2: Using loose dR cut 
+					h->gen_djmassX2->Fill(gen_djmass, _w);
+			}
+
+			
+			else if ((gen_goodmass && gen_ymaxdj >= h->ymin && gen_ymaxdj < h->ymax) && (reco_id) &&   		
+      				(deltaR_onethree < 0.2 && deltaR_twothree < 0.2) && jtpt[2] > 30.&& _jetids[2]){
+				        
+					// CASE 3: Adding third reco jet into dR calculation 
+					h->gen_djmassX3->Fill(gen_djmass, _w);
+			}
+			
+			else {
+					
+					//CASE 4: Anything else
+					h->gen_djmassX4->Fill(gen_djmass, _w);
+			}
   }// Unfolding studies dijet mass
   
   
@@ -1467,14 +1469,11 @@ void fillHistos::fillBasic(basicHistos *h)
   // First background... Checking the fraction of reco jets are not matched with gen jets along reco pt spectrum.
   if (_jp_ismc) { 
   	
-    double DR;
-    DR=0;
     
   	
   	for (int j = 0; j != njt; ++j) { // reco jet
-  		
-  	     bool _ismatched = false; 
-
+  	bool _ISmatched = false;	
+		
              _j1.SetPtEtaPhiE(jtpt[j],jteta[j],jtphi[j],jte[j]);
              double yreco = jty[j];
              bool goodPt = (jtpt[j]>30.);
@@ -1482,48 +1481,56 @@ void fillHistos::fillBasic(basicHistos *h)
      
 	     for (int k = 0; k != gen_njt; ++k) { // gen jet
 		
+  	     bool _ismatched = false; 
+    	     double DR;
+    	     DR=0;
+		
 		_j1_gen.SetPtEtaPhiE(gen_jtpt[k],gen_jteta[k],gen_jtphi[k],gen_jte[k]);
 		double ygen = jtgeny[k];
 		bool gen_goodPt = (gen_jtpt[k]>30.);
 		
     		DR = ( _j1_gen.DeltaR(_j1));
-		if (DR < 0.2) _ismatched = true;  	
+		if (DR < 0.2 && gen_goodPt && fabs(ygen) >= h->ymin && fabs(ygen) < h->ymax) _ismatched = true;  	
 
-			
+		if (_ismatched){
+ 			_ISmatched = true;
+               		break;
+		} 		
+					
+					
+					
+      
+      
+     	}//gen jet
+		
 			// Filling background profile plots..
-			if (((gen_goodPt && fabs(ygen) >= h->ymin && fabs(ygen) < h->ymax && 
-			      fabs(yreco) >= h->ymin && fabs(yreco) < h->ymax )) &&
-			      (reco_id)) {
+			if (fabs(yreco) >= h->ymin && fabs(yreco) < h->ymax && (reco_id)) {
 			    
 					assert(h->pbg_vsPt);
-					h->pbg_vsPt->Fill(jtpt[j], _ismatched ? 0 : 1, _w); // the reason it is reversed (mathced=0 ; unmatched=1) because BACKGROUND = 1-(matched/all)
-					
-					
-					
-      
-      
-      }//matching and filling
-     }//gen jet
+					h->pbg_vsPt->Fill(jtpt[j], _ISmatched ? 0 : 1, _w); // the reason it is reversed (mathced=0 ; unmatched=1) because BACKGROUND = 1-(matched/all)
+   
+    }//matching and filling
    }//reco jet
   }//Background studies	
   
   // Now acceptance... Checking the fraction of gen jets mathched with reco jets along gen jets pt spectrum
   if (_jp_ismc) {
   	
-    double DR_two;
-    DR_two=0;
-  	
+ 
   	for (int j = 0; j != gen_njt; ++j) { // gen jet
   		
-  	     bool _ismatched = false; 
+             bool _ISmatched = false;
 
              _j2_gen.SetPtEtaPhiE(gen_jtpt[j],gen_jteta[j],gen_jtphi[j],gen_jte[j]);
              double ygen = jtgeny[j];
 	     bool gen_goodPt = (gen_jtpt[j]>30.);
-             
-     
-	     for (int k = 0; k != njt; ++k) { // reco jet
+	     
+		for (int k = 0; k != njt; ++k) { // reco jet
 		
+    		double DR_two;
+    		DR_two=0;
+  	        bool _ismatched = false;
+	
 		_j2.SetPtEtaPhiE(jtpt[k],jteta[k],jtphi[k],jte[k]);
 		double yreco = jty[k];
              	bool goodPt = (jtpt[k]>30.);
@@ -1531,23 +1538,22 @@ void fillHistos::fillBasic(basicHistos *h)
 		
 		
     		DR_two = ( _j2_gen.DeltaR(_j2));
-		if (DR_two < 0.2) _ismatched = true;  	
+		if (DR_two < 0.2 && fabs(yreco) >= h->ymin && fabs(yreco) < h->ymax && (reco_id)) _ismatched = true; //		
+                
+		if (_ismatched) {
+		             _ISmatched = true;
+			     break;
+		}  	
+                
+	  
+     	}//reco jet
 
-			
 			// Filling acceptance profile plots..
-			if (((gen_goodPt && fabs(ygen) >= h->ymin && fabs(ygen) < h->ymax && 
-			      fabs(yreco) >= h->ymin && fabs(yreco) < h->ymax )) &&
-			      (reco_id)) {
+			if (gen_goodPt && fabs(ygen) >= h->ymin && fabs(ygen) < h->ymax) {
 			    
 					assert(h->paccept_vsPt);
-					h->paccept_vsPt->Fill(gen_jtpt[j], _ismatched ? 1 : 0, _w);
-					
-					
-					
-      
-      
-      }//matching and filling
-     }//reco jet
+                                        h->paccept_vsPt->Fill(gen_jtpt[j], _ISmatched ? 1 : 0, _w);
+    }//matching and filling			
    }//gen jet
   }//Acceptance studies	
   	

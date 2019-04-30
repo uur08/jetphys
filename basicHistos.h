@@ -82,8 +82,13 @@ class basicHistos {
   TH1D *gen_hdjmass;
   TH1D *gen_hdjmass_half;
   TH1D *gen_hdjmass0;
+  // Investigation of gen jet loss
+  TH1D *gen_djmassX0; // Matched gen jets with reco under dR criteria (reco and gen eta bin)
+  TH1D *gen_djmassX1; // Matched gen jets with reco under dR criteria (only gen eta bin)
+  TH1D *gen_djmassX2; // Matched gen jets with reco loose dR(0.4) criteria (only gen eta bin)
+  TH1D *gen_djmassX3; // Matched gen jets with reco under dR criteria (Third reco jet included to dR calculation)
+  TH1D *gen_djmassX4; // Matched gen jets with reco under dR criteria (Something else)
   
-  TH1D *gen_djmass_matched; // Matched gen jets with reco under dR criteria
   TH1D *gen_hdj_leading;
   TH1D *gen_hdj_subleading;
   
