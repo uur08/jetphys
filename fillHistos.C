@@ -1380,8 +1380,9 @@ void fillHistos::fillBasic(basicHistos *h)
     // We are within a loop, so the class variables _j1 and _j2 should not be initialized here
     _j1.SetPtEtaPhiE(jtpt[i0],jteta[i0],jtphi[i0],jte[i0]);
     _j2.SetPtEtaPhiE(jtpt[i1],jteta[i1],jtphi[i1],jte[i1]);
-    if (njt>2) _j3.SetPtEtaPhiE(jtpt[2],jteta[2],jtphi[2],jte[2]);
-			
+    _j3.SetPtEtaPhiE(jtpt[2],jteta[2],jtphi[2],jte[2]);
+    if (njt == 2)_j3.SetPtEtaPhiE(0.,0.,0.,0.);
+    
 			double djmass = (_j1+_j2).M();
 			double ymaxdj = max(fabs(jty[i0]),fabs(jty[i1]));
 			bool goodmass = (jtpt[i0]>30. && jtpt[i1]>30.);
@@ -1389,9 +1390,12 @@ void fillHistos::fillBasic(basicHistos *h)
 			
 			deltaR_one = min( _j1_gen.DeltaR(_j1), _j1_gen.DeltaR(_j2) );
 			deltaR_two = min( _j2_gen.DeltaR(_j1), _j2_gen.DeltaR(_j2) );
-                        deltaR_onethree = min (min (_j1_gen.DeltaR(_j1), _j1_gen.DeltaR(_j2)), _j1_gen.DeltaR(_j3));
-                        deltaR_twothree = min (min (_j2_gen.DeltaR(_j1), _j2_gen.DeltaR(_j2)), _j2_gen.DeltaR(_j3));
-
+                        
+			if (njt>2){
+			 	
+				deltaR_onethree = min (min (_j1_gen.DeltaR(_j1), _j1_gen.DeltaR(_j2)), _j1_gen.DeltaR(_j3));
+                        	deltaR_twothree = min (min (_j2_gen.DeltaR(_j1), _j2_gen.DeltaR(_j2)), _j2_gen.DeltaR(_j3));
+			}
 			
 			// Filling response matrix //
 			if ((gen_goodmass && gen_ymaxdj >= h->ymin && gen_ymaxdj < h->ymax && ymaxdj >= h->ymin && ymaxdj < h->ymax) && 
@@ -1450,16 +1454,20 @@ void fillHistos::fillBasic(basicHistos *h)
 
 			
 			else if ((gen_goodmass && gen_ymaxdj >= h->ymin && gen_ymaxdj < h->ymax) && (reco_id) &&   		
-      				(deltaR_onethree < 0.2 && deltaR_twothree < 0.2) && jtpt[2] > 30.&& _jetids[2]){
+      				(deltaR_onethree < 0.2 && deltaR_twothree < 0.2) && _j3.Pt() > 30. && _jetids[2]){
 				        
 					// CASE 3: Adding third reco jet into dR calculation 
 					h->gen_djmassX3->Fill(gen_djmass, _w);
 			}
 			
-			else {
+			else if ((gen_goodmass && gen_ymaxdj >= h->ymin && gen_ymaxdj < h->ymax)) {
 					
 					//CASE 4: Anything else
 					h->gen_djmassX4->Fill(gen_djmass, _w);
+			}
+			
+			else {
+			 	
 			}
   }// Unfolding studies dijet mass
   
