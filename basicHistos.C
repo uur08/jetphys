@@ -13,10 +13,11 @@
 using namespace std;
 
 basicHistos::basicHistos(TDirectory *dir, string trigname, string cotrig,
-			 double ymin, double ymax,
-			 double pttrg, double ptmin, double ptmax,
-			 bool ismc)
-  : lumsum(0), lumsum2(0) {
+                         double ymin, double ymax,
+                         double pttrg, double ptmin, double ptmax,
+                         bool ismc)
+    : lumsum(0), lumsum2(0)
+{
 
   TDirectory *curdir = gDirectory;
   assert(dir->cd());
@@ -39,79 +40,79 @@ basicHistos::basicHistos(TDirectory *dir, string trigname, string cotrig,
   // (little higher than resolution, but fairly flat relative width)
   // http://cmssw.cvs.cern.ch/cgi-bin/cmssw.cgi/CMSSW/QCDAnalysis/HighPtJetAnalysis/interface/DefaultPtBins.h?revision=1.2&view=markup
   const double x0[] =
-    {1, 5, 6, 8, 10, 12, 15, 18, 21, 24, 28, 32, 37, 43, 49, 56, 64, 74, 84,
-     97, 114, 133, 153, 174, 196, 220, 245, 272, 300, 330, 362, 395, 430, 468,
-     507, 548, 592, 638, 686, 737, 790, 846, 905, 967,
-     1032, 1101, 1172, 1248, 1327, 1410, 1497, 1588, 1684, 1784, 1890, 2000,
-     2116, 2238, 2366, 2500, 2640, 2787, 2941, 3103, 3273, 3450, 3637, 3832, 
-     4037, 4252, 4477, 4713, 4961, 5220, 5492, 5777, 6076, 6389, 6717, 7000};
-  const int nx0 = sizeof(x0)/sizeof(x0[0])-1;
+      {1, 5, 6, 8, 10, 12, 15, 18, 21, 24, 28, 32, 37, 43, 49, 56, 64, 74, 84,
+       97, 114, 133, 153, 174, 196, 220, 245, 272, 300, 330, 362, 395, 430, 468,
+       507, 548, 592, 638, 686, 737, 790, 846, 905, 967,
+       1032, 1101, 1172, 1248, 1327, 1410, 1497, 1588, 1684, 1784, 1890, 2000,
+       2116, 2238, 2366, 2500, 2640, 2787, 2941, 3103, 3273, 3450, 3637, 3832,
+       4037, 4252, 4477, 4713, 4961, 5220, 5492, 5777, 6076, 6389, 6717, 7000};
+  const int nx0 = sizeof(x0) / sizeof(x0[0]) - 1;
   //
   const double *bx0 = &x0[0];
   const int nbx0 = nx0;
 
   // Wider version of the binning for less statistical scatter for b-jets
   const double xW[] =
-    {1, 5, 15, 24, 37, 56, 84, 114, 153, 196, 245, 330, 430, 548, 686, 846,
-     1032, 1248, 1497, 1784, 2116, 2500, 2941, 3450, 3637,
-     4252, 4961, 5777, 6717, 7000};
-  const int nxW = sizeof(xW)/sizeof(xW[0])-1;
+      {1, 5, 15, 24, 37, 56, 84, 114, 153, 196, 245, 330, 430, 548, 686, 846,
+       1032, 1248, 1497, 1784, 2116, 2500, 2941, 3450, 3637,
+       4252, 4961, 5777, 6717, 7000};
+  const int nxW = sizeof(xW) / sizeof(xW[0]) - 1;
   //
   const double *bxW = &xW[0];
   const int nbxW = nxW;
 
-
-// Optimized binning created by optimizeBins.C ("MC"; lumi 1000/pb, eff 1e+10%)
-// Using NLOxNP theory fit as input when available
+  // Optimized binning created by optimizeBins.C ("MC"; lumi 1000/pb, eff 1e+10%)
+  // Using NLOxNP theory fit as input when available
   const int neta = 8;
   const int nbins = 65;
-   double vx[neta][nbins] =
-  {{10, 12, 15, 18, 21, 24, 28, 32, 37, 43, 49, 56, 64, 74, 84, 97, 114, 133, 153, 174, 196, 220, 245, 272, 300, 330, 362, 395, 430, 468, 507, 548, 592, 638, 686, 737, 790, 846, 905, 967, 1032, 1101, 1172, 1248, 1327, 1410, 1497, 1588, 1684, 1784, 1890, 2000, 2116, 2238, 2366, 2500, 2640, 2787, 2941, 3103, 3273, 3450, 3832, 6076, 6389}, // Eta_0.0-0.5
-   {10, 12, 15, 18, 21, 24, 28, 32, 37, 43, 49, 56, 64, 74, 84, 97, 114, 133, 153, 174, 196, 220, 245, 272, 300, 330, 362, 395, 430, 468, 507, 548, 592, 638, 686, 737, 790, 846, 905, 967, 1032, 1101, 1172, 1248, 1327, 1410, 1497, 1588, 1684, 1784, 1890, 2000, 2116, 2238, 2366, 2500, 2640, 2787, 2941, 3103, 3273, 3637, 5220, 5492, 0}, // Eta_0.5-1.0
-   {10, 12, 15, 18, 21, 24, 28, 32, 37, 43, 49, 56, 64, 74, 84, 97, 114, 133, 153, 174, 196, 220, 245, 272, 300, 330, 362, 395, 430, 468, 507, 548, 592, 638, 686, 737, 790, 846, 905, 967, 1032, 1101, 1172, 1248, 1327, 1410, 1497, 1588, 1684, 1784, 1890, 2000, 2116, 2238, 2366, 2500, 2640, 2941, 3832, 4037, 0, 0, 0, 0, 0}, // Eta_1.0-1.5
-   {10, 12, 15, 18, 21, 24, 28, 32, 37, 43, 49, 56, 64, 74, 84, 97, 114, 133, 153, 174, 196, 220, 245, 272, 300, 330, 362, 395, 430, 468, 507, 548, 592, 638, 686, 737, 790, 846, 905, 967, 1032, 1101, 1172, 1248, 1327, 1410, 1497, 1588, 1684, 1784, 1890, 2000, 2116, 2500, 2640, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Eta_1.5-2.0
-   {10, 12, 15, 18, 21, 24, 28, 32, 37, 43, 49, 56, 64, 74, 84, 97, 114, 133, 153, 174, 196, 220, 245, 272, 300, 330, 362, 395, 430, 468, 507, 548, 592, 638, 686, 737, 790, 846, 905, 967, 1032, 1101, 1172, 1248, 1327, 1410, 1497, 1588, 1684, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Eta_2.0-2.5
-   {10, 12, 15, 18, 21, 24, 28, 32, 37, 43, 49, 56, 64, 74, 84, 97, 114, 133, 153, 174, 196, 220, 245, 272, 300, 330, 362, 395, 430, 468, 507, 548, 592, 638, 686, 737, 790, 846, 905, 967, 1032, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Eta_2.5-3.0
-   {10, 12, 15, 18, 21, 24, 28, 32, 37, 43, 49, 56, 64, 74, 84, 97, 114, 133, 153, 174, 196, 220, 245, 272, 300, 330, 362, 395, 430, 468, 507, 548, 592, 638, 686, 737, 790, 846, 905, 967, 1032, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Eta_3.0-3.5
-   {10, 12, 15, 18, 21, 24, 28, 32, 37, 43, 49, 56, 64, 74, 84, 97, 114, 133, 153, 174, 196, 220, 245, 272, 300, 330, 362, 395, 430, 468, 507, 548, 592, 638, 686, 737, 790, 846, 905, 967, 1032, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}}; // Eta_3.5-4.0
+  double vx[neta][nbins] =
+      {{10, 12, 15, 18, 21, 24, 28, 32, 37, 43, 49, 56, 64, 74, 84, 97, 114, 133, 153, 174, 196, 220, 245, 272, 300, 330, 362, 395, 430, 468, 507, 548, 592, 638, 686, 737, 790, 846, 905, 967, 1032, 1101, 1172, 1248, 1327, 1410, 1497, 1588, 1684, 1784, 1890, 2000, 2116, 2238, 2366, 2500, 2640, 2787, 2941, 3103, 3273, 3450, 3832, 6076, 6389}, // Eta_0.0-0.5
+       {10, 12, 15, 18, 21, 24, 28, 32, 37, 43, 49, 56, 64, 74, 84, 97, 114, 133, 153, 174, 196, 220, 245, 272, 300, 330, 362, 395, 430, 468, 507, 548, 592, 638, 686, 737, 790, 846, 905, 967, 1032, 1101, 1172, 1248, 1327, 1410, 1497, 1588, 1684, 1784, 1890, 2000, 2116, 2238, 2366, 2500, 2640, 2787, 2941, 3103, 3273, 3637, 5220, 5492, 0},    // Eta_0.5-1.0
+       {10, 12, 15, 18, 21, 24, 28, 32, 37, 43, 49, 56, 64, 74, 84, 97, 114, 133, 153, 174, 196, 220, 245, 272, 300, 330, 362, 395, 430, 468, 507, 548, 592, 638, 686, 737, 790, 846, 905, 967, 1032, 1101, 1172, 1248, 1327, 1410, 1497, 1588, 1684, 1784, 1890, 2000, 2116, 2238, 2366, 2500, 2640, 2941, 3832, 4037, 0, 0, 0, 0, 0},                // Eta_1.0-1.5
+       {10, 12, 15, 18, 21, 24, 28, 32, 37, 43, 49, 56, 64, 74, 84, 97, 114, 133, 153, 174, 196, 220, 245, 272, 300, 330, 362, 395, 430, 468, 507, 548, 592, 638, 686, 737, 790, 846, 905, 967, 1032, 1101, 1172, 1248, 1327, 1410, 1497, 1588, 1684, 1784, 1890, 2000, 2116, 2500, 2640, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},                               // Eta_1.5-2.0
+       {10, 12, 15, 18, 21, 24, 28, 32, 37, 43, 49, 56, 64, 74, 84, 97, 114, 133, 153, 174, 196, 220, 245, 272, 300, 330, 362, 395, 430, 468, 507, 548, 592, 638, 686, 737, 790, 846, 905, 967, 1032, 1101, 1172, 1248, 1327, 1410, 1497, 1588, 1684, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},                                                 // Eta_2.0-2.5
+       {10, 12, 15, 18, 21, 24, 28, 32, 37, 43, 49, 56, 64, 74, 84, 97, 114, 133, 153, 174, 196, 220, 245, 272, 300, 330, 362, 395, 430, 468, 507, 548, 592, 638, 686, 737, 790, 846, 905, 967, 1032, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},                                                                         // Eta_2.5-3.0
+       {10, 12, 15, 18, 21, 24, 28, 32, 37, 43, 49, 56, 64, 74, 84, 97, 114, 133, 153, 174, 196, 220, 245, 272, 300, 330, 362, 395, 430, 468, 507, 548, 592, 638, 686, 737, 790, 846, 905, 967, 1032, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},                                                                         // Eta_3.0-3.5
+       {10, 12, 15, 18, 21, 24, 28, 32, 37, 43, 49, 56, 64, 74, 84, 97, 114, 133, 153, 174, 196, 220, 245, 272, 300, 330, 362, 395, 430, 468, 507, 548, 592, 638, 686, 737, 790, 846, 905, 967, 1032, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};                                                                        // Eta_3.5-4.0
 
-   
-    
+  const double etarange[] =
+      {-5.191, -3.839, -3.489, -3.139, -2.964, -2.853, -2.650, -2.500, -2.322, -2.172, -1.930, -1.653, -1.479, -1.305, -1.044, -0.783, -0.522, -0.261, 0.000, 0.261, 0.522, 0.783, 1.044, 1.305, 1.479, 1.653, 1.930, 2.172, 2.322, 2.500, 2.650, 2.853, 2.964, 3.139, 3.489, 3.839, 5.191};
+  const unsigned int netas = sizeof(etarange) / sizeof(etarange[0]) - 1;
 
-
- const double etarange[] =
-  {-5.191, -3.839, -3.489, -3.139, -2.964, -2.853, -2.650, -2.500, -2.322, -2.172, -1.930, -1.653, -1.479, -1.305, -1.044, -0.783, -0.522, -0.261, 0.000, 0.261, 0.522, 0.783, 1.044, 1.305, 1.479, 1.653, 1.930, 2.172, 2.322, 2.500, 2.650, 2.853, 2.964, 3.139, 3.489, 3.839, 5.191};
-  const unsigned int netas = sizeof(etarange)/sizeof(etarange[0])-1;
-
-  int ieta = int(0.5*(ymin+ymax)/0.5); assert(ieta<neta);
+  int ieta = int(0.5 * (ymin + ymax) / 0.5);
+  assert(ieta < neta);
   vector<double> x;
-  for (int i = 0; i != nbins && vx[ieta][i]!=0; ++i) {
+  for (int i = 0; i != nbins && vx[ieta][i] != 0; ++i)
+  {
     x.push_back(vx[ieta][i]);
   } // for i
-  const int nx = x.size()-1;
+  const int nx = x.size() - 1;
 
   const double ay[] =
-    {0, 0.261, 0.522, 0.783, 0.957, 1.131, 1.305, 1.479, 1.93, 2.322, 2.411,
-     2.5, 2.853, 2.964, 5.191};
-  const int nay = sizeof(ay)/sizeof(ay[0]);
+      {0, 0.261, 0.522, 0.783, 0.957, 1.131, 1.305, 1.479, 1.93, 2.322, 2.411,
+       2.5, 2.853, 2.964, 5.191};
+  const int nay = sizeof(ay) / sizeof(ay[0]);
 
   vector<double> yW(nay);
-  for (unsigned int i = 0; i != yW.size(); ++i) {
+  for (unsigned int i = 0; i != yW.size(); ++i)
+  {
     yW[i] = ay[i];
   }
-  const int nyW = yW.size()-1;
+  const int nyW = yW.size() - 1;
 
   vector<double> y(51);
-  for (unsigned int i = 0; i != y.size(); ++i) {
-    y[i] = -5. + 0.2*i;
+  for (unsigned int i = 0; i != y.size(); ++i)
+  {
+    y[i] = -5. + 0.2 * i;
   }
-  const int ny = y.size()-1;
+  const int ny = y.size() - 1;
 
   vector<double> pv(26);
-  for (unsigned int i = 0; i != pv.size(); ++i) {
+  for (unsigned int i = 0; i != pv.size(); ++i)
+  {
     pv[i] = -0.5 + i;
   }
-  const int npv = pv.size()-1;
+  const int npv = pv.size() - 1;
 
   /*
   // raw spectrum
@@ -163,7 +164,6 @@ basicHistos::basicHistos(TDirectory *dir, string trigname, string cotrig,
   hpt4 = new TH1D("hpt4","",nx,&x[0]);
   */
 
-  
   /*
   // dijet mass
 
@@ -175,35 +175,43 @@ basicHistos::basicHistos(TDirectory *dir, string trigname, string cotrig,
   const int nMassBins = 85;
   double massBoundaries[nMassBins+1] = {1, 3, 6, 10, 16, 23, 31, 40, 50, 61, 74, 88, 103, 119, 137, 156, 176, 197, 220, 244, 270, 296, 325, 354, 386, 419, 453, 489, 526, 565, 606, 649, 693, 740, 788, 838, 890, 944, 1000, 1058, 1118, 1181, 1246, 1313, 1383, 1455, 1530, 1607, 1687, 1770, 1856, 1945, 2037, 2132, 2231, 2332, 2438, 2546, 2659, 2775, 2895, 3019, 3147, 3279, 3416, 3558, 3704, 3854, 4010, 4171, 4337, 4509, 4686, 4869, 5058, 5253, 5663, 6099, 6808, 7589, 8447, 9391, 10430, 12395, 12827, 14000};
   */
-  
+
   //new mass binning (Paolo)
   const int mjj_neta = 8;
-  const int mjj_nbins = 33;
+  const int mjj_nbins = 43;
   double mjj_vx[mjj_neta][mjj_nbins] =
       {
-          {67, 88, 119, 156, 197, 244, 296, 354, 419, 489, 565, 649, 740, 944, 1181, 1383, 1607, 1856, 
-           2132, 2438, 2775, 3147, 3558, 4010, 4509, 5058, 5663, 6328, 7060, 7866, 8752, 9726, 10000}, // Eta_0.0-0.5
+          {67, 88, 119, 156, 197, 244, 296, 354, 419, 489, 565, 649, 740, 838, 944, 1058, 1181, 1313, 1455, 1607, 1770,
+           1945, 2132, 2332, 2546, 2775, 3019, 3279, 3558, 3854, 4171, 4509, 4869, 5253, 5663, 6099, 6564, 7060, 7589, 8152,
+           8752, 9391, 10072}, // Eta_0.0-0.5
 
-          {88, 119, 156, 197, 244, 296, 354, 419, 489, 565, 649, 740, 944, 1181, 1383, 1607, 1856, 
-           2132, 2438, 2775, 3147, 3558, 4010, 4509, 5058, 5663, 6328, 7060, 7866, 8752, 9726, 10000, 0}, //Eta_0.5-1.0
+          {88, 119, 156, 197, 244, 296, 354, 419, 489, 565, 649, 740, 838, 944, 1058, 1181, 1313, 1455, 1607, 1770, 1945,
+           2132, 2332, 2546, 2775, 3019, 3279, 3558, 3854, 4171, 4509, 4869, 5253, 5663, 6099, 6564, 7060, 7589, 8152, 8752,
+           9391, 10072, 0}, //Eta_0.5-1.0
 
-          {137, 176, 220, 270, 325, 386, 453, 526, 606, 693, 788, 890, 1181, 1383, 1607, 1856, 
-           2132, 2438, 2775, 3147, 3558, 4010, 4509, 5058, 5663, 6328, 7060, 7866, 8752, 9726, 10000, 0, 0}, // Eta_1.0-1.5
+          {137, 176, 220, 270, 325, 386, 453, 526, 606, 693, 788, 890, 1000, 1118, 1246, 1383, 1530, 1687, 1856, 2037, 2231,
+           2438, 2659, 2895, 3147, 3416, 3704, 4010, 4337, 4686, 5058, 5455, 5877, 6328, 6808, 7320, 7866, 8447, 9067, 9726,
+           10430, 0, 0}, // Eta_1.0-1.5
 
-          {220, 270, 325, 386, 453, 526, 606, 693, 788, 890, 1181, 1383, 1607, 1856, 2132, 2438, 2775, 3147, 3558, 4010, 
-           4509, 5058, 5663, 6328, 7060, 7866, 8752, 9726, 10000, 0, 0, 0, 0}, // Eta_1.5-2.0
+          {220, 270, 325, 386, 453, 526, 606, 693, 788, 890, 1000, 1118, 1246, 1383, 1530, 1687, 1856, 2037, 2231, 2438, 2659,
+           2895, 3147, 3416, 3704, 4010, 4337, 4686, 5058, 5455, 5877, 6328, 6808, 7320, 7866, 8447, 9067, 9726,
+           10430, 0, 0, 0, 0}, // Eta_1.5-2.0
 
-          {354, 419, 489, 565, 649, 740, 944, 1181, 1383, 1607, 1856, 2132, 2438, 2775, 3147, 3558, 4010, 4509, 5058, 5663, 6328, 7060, 
-           7866, 8752, 9726, 10000, 0, 0, 0, 0, 0, 0, 0}, //Eta_2.0-2.5
+          {354, 419, 489, 565, 649, 740, 838, 944, 1058, 1181, 1313, 1455, 1607, 1770, 1945, 2132, 2332, 2546, 2775,
+           3019, 3279, 3558, 3854, 4171, 4509, 4869, 5253, 5663, 6099, 6564, 7060, 7589, 8152, 8752, 9391,
+           10072, 0, 0, 0, 0, 0, 0, 0}, //Eta_2.0-2.5
 
-          {354, 419, 489, 565, 649, 740, 838, 944, 1181, 1383, 1607, 1856, 2132, 2438, 2775, 3147, 3558, 4010, 4509, 5058, 5663, 6328, 7060, 
-           7866, 8752, 9726, 10000, 0, 0, 0, 0, 0, 0}, //dummy bin
+          {354, 419, 489, 565, 649, 740, 838, 944, 1058, 1181, 1313, 1455, 1607, 1770, 1945, 2132, 2332, 2546, 2775,
+           3019, 3279, 3558, 3854, 4171, 4509, 4869, 5253, 5663, 6099, 6564, 7060, 7589, 8152, 8752, 9391,
+           10072, 0, 0, 0, 0, 0, 0, 0}, //dummy bin
 
-          {354, 419, 489, 565, 649, 740, 838, 944, 1181, 1383, 1607, 1856, 2132, 2438, 2775, 3147, 3558, 4010, 4509, 5058, 5663, 6328, 7060, 
-           7866, 8752, 9726, 10000, 0, 0, 0, 0, 0, 0}, //dummy bin
+          {354, 419, 489, 565, 649, 740, 838, 944, 1058, 1181, 1313, 1455, 1607, 1770, 1945, 2132, 2332, 2546, 2775,
+           3019, 3279, 3558, 3854, 4171, 4509, 4869, 5253, 5663, 6099, 6564, 7060, 7589, 8152, 8752, 9391,
+           10072, 0, 0, 0, 0, 0, 0, 0}, //dummy bin
 
-          {354, 419, 489, 565, 649, 740, 838, 944, 1181, 1383, 1607, 1856, 2132, 2438, 2775, 3147, 3558, 4010, 4509, 5058, 5663, 6328, 7060, 
-           7866, 8752, 9726, 10000, 0, 0, 0, 0, 0, 0} //dummy bin
+          {354, 419, 489, 565, 649, 740, 838, 944, 1058, 1181, 1313, 1455, 1607, 1770, 1945, 2132, 2332, 2546, 2775,
+           3019, 3279, 3558, 3854, 4171, 4509, 4869, 5253, 5663, 6099, 6564, 7060, 7589, 8152, 8752, 9391,
+           10072, 0, 0, 0, 0, 0, 0, 0} //dummy bin
       };
 
   /*const int mjj_neta = 8;
@@ -249,35 +257,44 @@ basicHistos::basicHistos(TDirectory *dir, string trigname, string cotrig,
   3854, 4010, 4171, 4337, 4509, 4686, 4869, 5058, 5253, 5455, 5663, 5877, 6099, 6328, 6564, 6808, 7060, 7320, 7589, 7866, 8152, 8447, 8752, 9067, 9391, 9726, 10072, 
   10430, 10798, 11179, 11571, 11977, 12395, 12827, 13272, 13732, 14000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} //dummy bin
   };*/
-  
-  int mjj_ieta = int(0.5*(ymin+ymax)/0.5); 
+
+  int mjj_ieta = int(0.5 * (ymin + ymax) / 0.5);
   vector<double> mjj_x;
-  for (int i = 0; i != mjj_nbins && mjj_vx[mjj_ieta][i]!=0; ++i) {
+  for (int i = 0; i != mjj_nbins && mjj_vx[mjj_ieta][i] != 0; ++i)
+  {
     mjj_x.push_back(mjj_vx[mjj_ieta][i]);
   } // for i
-  const int mjj_nx = mjj_x.size()-1;
+  const int mjj_nx = mjj_x.size() - 1;
 
   //-------------half_bins for gen spectrum----------------//
-  
+
   const int mjj_neta_half = 8;
-  const int mjj_nbins_half = 17;
+  const int mjj_nbins_half = 22;
   double mjj_vx_half[mjj_neta_half][mjj_nbins_half] =
       {
-          {67, 119, 197, 296, 419, 565, 740, 944, 1383, 1856, 2438, 3147, 4010, 5058, 6328, 7866, 9726}, // Eta_0.0-0.5
+          {67, 119, 197, 296, 419, 565, 740, 944, 1181, 1455, 1770, 2132, 2546, 3019, 3558, 4171,
+           4869, 5663, 6564, 7589, 8752, 10072}, // Eta_0.0-0.5
 
-          {88, 156, 244, 354, 489, 649, 838, 1181, 1607, 2132, 2775, 3558, 4509, 5663, 7060, 8752, 10000}, //Eta_0.5-1.0
-          
-          {137, 220, 325, 453, 606, 788, 1000, 1383, 1856, 2438, 3147, 4010, 5058, 6328, 7866, 9726, 0}, // Eta_1.0-1.5
+          {88, 156, 244, 354, 489, 649, 838, 1058, 1313, 1607, 1945, 2332, 2775, 3279, 3854, 4509,
+           5253, 6099, 7060, 8152, 9391, 10430}, //Eta_0.5-1.0
 
-          {220, 325, 453, 606, 788, 1000, 1383, 1856, 2438, 3147, 4010, 5058, 6328, 7866, 9726, 0, 0}, // Eta_1.5-2.0
+          {137, 220, 325, 453, 606, 788, 1000, 1246, 1530, 1856, 2231, 2659, 3147, 3704, 4337, 5058,
+           5877, 6808, 7866, 9067, 10430, 0}, // Eta_1.0-1.5
 
-          {354, 489, 649, 838, 1181, 1607, 2132, 2775, 3558, 4509, 5663, 7060, 8752, 10000, 0, 0, 0}, //Eta_2.0-2.5
+          {220, 325, 453, 606, 788, 1000, 1246, 1530, 1856, 2231, 2659, 3147, 3704, 4337, 5058, 5877,
+           6808, 7866, 9067, 10430, 0, 0}, // Eta_1.5-2.0
 
-          {354, 489, 649, 838, 1181, 1607, 2132, 2775, 3558, 4509, 5663, 7060, 8752, 10000, 0, 0, 0}, //dummy
+          {354, 489, 649, 838, 1058, 1313, 1607, 1945, 2332, 2775, 3279, 3854, 4509, 5253, 6099, 7060,
+           8152, 9391, 10430, 0, 0, 0}, //Eta_2.0-2.5
 
-          {354, 489, 649, 838, 1181, 1607, 2132, 2775, 3558, 4509, 5663, 7060, 8752, 10000, 0, 0, 0}, //dummy
+          {354, 489, 649, 838, 1058, 1313, 1607, 1945, 2332, 2775, 3279, 3854, 4509, 5253, 6099, 7060,
+           8152, 9391, 10430, 0, 0, 0}, //dummy
 
-          {354, 489, 649, 838, 1181, 1607, 2132, 2775, 3558, 4509, 5663, 7060, 8752, 10000, 0, 0, 0} //dummy
+          {354, 489, 649, 838, 1058, 1313, 1607, 1945, 2332, 2775, 3279, 3854, 4509, 5253, 6099, 7060,
+           8152, 9391, 10430, 0, 0, 0}, //dummy
+
+          {354, 489, 649, 838, 1058, 1313, 1607, 1945, 2332, 2775, 3279, 3854, 4509, 5253, 6099, 7060,
+           8152, 9391, 10430, 0, 0, 0} //dummy
 
       };
 
@@ -330,43 +347,40 @@ basicHistos::basicHistos(TDirectory *dir, string trigname, string cotrig,
   int mjj_ieta_half = int(0.5 * (ymin + ymax) / 0.5);
   vector<double> mjj_x_half;
   for (int i = 0; i != mjj_nbins_half && mjj_vx_half[mjj_ieta_half][i] != 0; ++i)
-    {
-      mjj_x_half.push_back(mjj_vx_half[mjj_ieta_half][i]);
-    } // for i
+  {
+    mjj_x_half.push_back(mjj_vx_half[mjj_ieta_half][i]);
+  } // for i
   const int mjj_nx_half = mjj_x_half.size() - 1;
-  
-  //--------------------------------------------------//  
 
- 
-  hdjmass = new TH1D("hdjmass","",mjj_nx,&mjj_x[0]);
-  hdjmass_half = new TH1D("hdjmass_half","",mjj_nx_half,&mjj_x_half[0]);
-  hdjmass0 = new TH1D("hdjmass0","",int(_jp_sqrts),0.,_jp_sqrts);
-  
-  djmass_matched = new TH1D("hdjmass_matched","",mjj_nx,&mjj_x[0]); //matched reco jets with gen jets under dR criteria
-  hdj_leading = new TH1D("hdj_leading","",nx,&x[0]);
-  hdj_subleading = new TH1D("hdj_subleading","",nx,&x[0]);
-  
-  pdjmass_ptratio = new TProfile("pdjmass_ptratio","",nx,&x[0]);
-  pdjmass0_ptratio = new TProfile("pdjmass0_ptratio","",
-				  int(_jp_sqrts),0.,_jp_sqrts);
-  
-  
+  //--------------------------------------------------//
+
+  hdjmass = new TH1D("hdjmass", "", mjj_nx, &mjj_x[0]);
+  hdjmass_half = new TH1D("hdjmass_half", "", mjj_nx_half, &mjj_x_half[0]);
+  hdjmass0 = new TH1D("hdjmass0", "", int(_jp_sqrts), 0., _jp_sqrts);
+
+  djmass_matched = new TH1D("hdjmass_matched", "", mjj_nx, &mjj_x[0]); //matched reco jets with gen jets under dR criteria
+  hdj_leading = new TH1D("hdj_leading", "", nx, &x[0]);
+  hdj_subleading = new TH1D("hdj_subleading", "", nx, &x[0]);
+
+  pdjmass_ptratio = new TProfile("pdjmass_ptratio", "", nx, &x[0]);
+  pdjmass0_ptratio = new TProfile("pdjmass0_ptratio", "",
+                                  int(_jp_sqrts), 0., _jp_sqrts);
+
   //GEN-LEVEL dijet mass
-  
-  
-  gen_hdjmass = new TH1D("gen_hdjmass","",mjj_nx,&mjj_x[0]);
-  gen_hdjmass_half = new TH1D("gen_hdjmass_half","",mjj_nx_half,&mjj_x_half[0]);  
-  gen_hdjmass0 = new TH1D("gen_hdjmass0","",int(_jp_sqrts),0.,_jp_sqrts);
- 
-  gen_djmassX0 = new TH1D("gen_djmassX0","",mjj_nx,&mjj_x[0]); // matched gen jets with reco under dR criteria (reco and gen eta bin)
-  gen_djmassX1 = new TH1D("gen_djmassX1","",mjj_nx,&mjj_x[0]); // matched gen jets with reco under dR criteria (only gen eta bin)
-  gen_djmassX2 = new TH1D("gen_djmassX2","",mjj_nx,&mjj_x[0]); // matched gen jets with reco under loose dR criteria (only gen eta bin)
-  gen_djmassX3 = new TH1D("gen_djmassX3","",mjj_nx,&mjj_x[0]); // matched gen jets with reco under dR criteria (Third reco jet included to dR calculation )
-  gen_djmassX4 = new TH1D("gen_djmassX4","",mjj_nx,&mjj_x[0]); // matched gen jets with reco under dR criteria (Something else)
 
-  gen_hdj_leading = new TH1D("gen_hdj_leading","",nx,&x[0]);
-  gen_hdj_subleading = new TH1D("gen_hdj_subleading","",nx,&x[0]);
-  
+  gen_hdjmass = new TH1D("gen_hdjmass", "", mjj_nx, &mjj_x[0]);
+  gen_hdjmass_half = new TH1D("gen_hdjmass_half", "", mjj_nx_half, &mjj_x_half[0]);
+  gen_hdjmass0 = new TH1D("gen_hdjmass0", "", int(_jp_sqrts), 0., _jp_sqrts);
+
+  gen_djmassX0 = new TH1D("gen_djmassX0", "", mjj_nx, &mjj_x[0]); // matched gen jets with reco under dR criteria (reco and gen eta bin)
+  gen_djmassX1 = new TH1D("gen_djmassX1", "", mjj_nx, &mjj_x[0]); // matched gen jets with reco under dR criteria (only gen eta bin)
+  gen_djmassX2 = new TH1D("gen_djmassX2", "", mjj_nx, &mjj_x[0]); // matched gen jets with reco under loose dR criteria (only gen eta bin)
+  gen_djmassX3 = new TH1D("gen_djmassX3", "", mjj_nx, &mjj_x[0]); // matched gen jets with reco under dR criteria (Third reco jet included to dR calculation )
+  gen_djmassX4 = new TH1D("gen_djmassX4", "", mjj_nx, &mjj_x[0]); // matched gen jets with reco under dR criteria (Something else)
+
+  gen_hdj_leading = new TH1D("gen_hdj_leading", "", nx, &x[0]);
+  gen_hdj_subleading = new TH1D("gen_hdj_subleading", "", nx, &x[0]);
+
   /*
   // basic properties
   ppt = new TProfile("ppt","",nx,&x[0]);
@@ -378,7 +392,7 @@ basicHistos::basicHistos(TDirectory *dir, string trigname, string cotrig,
   hnpvgood = new TH1D("hnpvgood","",100,-0.5,99.5);
   hrho = new TH1D("hrho","",200,0,100);
   */
-  
+
   /*
   // JEC monitoring
   pjec_l1 = new TProfile("pjec_l1","",nx,&x[0]);
@@ -405,21 +419,18 @@ basicHistos::basicHistos(TDirectory *dir, string trigname, string cotrig,
   htrpu2 = new TH1D("htrpu2","",50,-0.5,49.5);
   hjet_vstrpu = new TH1D("hjet_vstrpu","",50,-0.5,49.5);
   */
-  hlumi_vstrpu = new TH1D("hlumi_vstrpu","",50,-0.5,49.5);
-  
-  
+  hlumi_vstrpu = new TH1D("hlumi_vstrpu", "", 50, -0.5, 49.5);
+
   // luminosity
-  hlumi = new TH1D("hlumi","",nx,&x[0]);
-  hlumi2 = new TH1D("hlumi2","",nx,&x[0]);
-  
-  
+  hlumi = new TH1D("hlumi", "", nx, &x[0]);
+  hlumi2 = new TH1D("hlumi2", "", nx, &x[0]);
+
   // inclusive efficiencies
-  peff = new TProfile("peff","",nx,&x[0]);
-  pideff = new TProfile("pideff","",nx,&x[0]);
-  pvtxeff = new TProfile("pvtxeff","",nx,&x[0]);
-  pdqmeff = new TProfile("pdqmeff","",nx,&x[0]);
-  
-  
+  peff = new TProfile("peff", "", nx, &x[0]);
+  pideff = new TProfile("pideff", "", nx, &x[0]);
+  pvtxeff = new TProfile("pvtxeff", "", nx, &x[0]);
+  pdqmeff = new TProfile("pdqmeff", "", nx, &x[0]);
+
   /*
   // control plots of components (JEC)
   pncand = new TProfile("pncand","",nx0,&x0[0]);
@@ -613,9 +624,10 @@ basicHistos::basicHistos(TDirectory *dir, string trigname, string cotrig,
   this->ismc = ismc;
 
   // MC checks
-  
+
   //htrpu = new TH1D("htrpu","",120,0.,60.); // for PU reweighing
-  if (this->ismc) {
+  if (this->ismc)
+  {
     //hpt_jt30 = new TH1D("hpt_jt30","",nx,&x[0]);
     //hpt_jt60 = new TH1D("hpt_jt60","",nx,&x[0]);
     //hpt_jt110 = new TH1D("hpt_jt110","",nx,&x[0]);
@@ -632,10 +644,9 @@ basicHistos::basicHistos(TDirectory *dir, string trigname, string cotrig,
     //hpt0_jt300 = new TH1D("hpt0_jt300","",3450,0.,3450.);
     //hpt0_jt370 = new TH1D("hpt0_jt370","",3450,0.,3450.);
 
+    hpthat = new TH1D("hpthat", "", nx, &x[0]);
+    hpthatnlo = new TH1D("hpthatnlo", "", nx, &x[0]);
 
-    hpthat = new TH1D("hpthat","",nx,&x[0]);
-    hpthatnlo = new TH1D("hpthatnlo","",nx,&x[0]);
-    
     /*
     //unfolding studies (Mikael)
     //mT: (pTgen,ygen); (pTreco,yreco)
@@ -654,19 +665,19 @@ basicHistos::basicHistos(TDirectory *dir, string trigname, string cotrig,
     myf = new TH1D("myf","my(yreco);p_{T,reco}",3485,15,3500); // pTreco, yreco
     myfuw = new TH1D("myfuw","my(yreco);p_{T,reco}",3485,15,3500); // pTreco, yreco
     */
-    
+
     //unfolding studies dijet mass
     //(Mjjgen,ygen); (Mjjreco,yreco)
-    matrix_gen_reco = new TH2D("matrix_gen_reco","Response_Matrix;Mjj_{reco};Mjj_{gen}",mjj_nx,&mjj_x[0],mjj_nx_half,&mjj_x_half[0]);
+    matrix_gen_reco = new TH2D("matrix_gen_reco", "Response_Matrix;Mjj_{reco};Mjj_{gen}", mjj_nx, &mjj_x[0], mjj_nx_half, &mjj_x_half[0]);
     //matrix_gen_reco = new TH2D("matrix_gen_reco","Response_Matrix;Mjj_{reco};Mjj_{gen}",mjj_nx,&mjj_x[0],mjj_nx,&mjj_x[0]);
     // Delta mass vs mass plots for resolution studies
-    h2jetres = new TH2D("h2jetres","Resolution;Mjj_{gen};#Deltamass",mjj_nx,&mjj_x[0],300,0.,3.);
+    h2jetres = new TH2D("h2jetres", "Resolution;Mjj_{gen};#Deltamass", mjj_nx, &mjj_x[0], 300, 0., 3.);
     // Profile plot to monitor mean values of mass resolution
-    pdjmass_res = new TProfile("pdjmass_res","",mjj_nx,&mjj_x[0]);
-    
+    pdjmass_res = new TProfile("pdjmass_res", "", mjj_nx, &mjj_x[0]);
+
     // Acceptance and background studies for Pt
-    pbg_vsPt = new TProfile("pbg_vspt","",nx,&x[0]);
-    paccept_vsPt = new TProfile("paccept_vspt","",nx,&x[0]);
+    pbg_vsPt = new TProfile("pbg_vspt", "", nx, &x[0]);
+    paccept_vsPt = new TProfile("paccept_vspt", "", nx, &x[0]);
 
     /*
     //htrpu = new TH1D("htrpu","",100,-0.5,99.5);
@@ -744,9 +755,10 @@ basicHistos::basicHistos(TDirectory *dir, string trigname, string cotrig,
 
   curdir->cd();
 }
-  
-basicHistos::~basicHistos() {
-  
+
+basicHistos::~basicHistos()
+{
+
   dir->cd();
   //hpttmp->Delete();
   dir->Write();
